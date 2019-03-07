@@ -15,9 +15,9 @@
     "iterations":"1000",
     "stopwords":"lot chp sbs full itt nhs dfid phe ncs wee european project"
   },
-  "from": {
+  "dataSource": {
     "cache": false,
-    "fields": {
+    "dataFields": {
       "id": "id",
       "labels": [
         "labels_t"

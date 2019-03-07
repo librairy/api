@@ -15,9 +15,9 @@
     "iterations":"1000",
     "stopwords":"write article say make thing year time"
   },
-  "from": {
+  "dataSource": {
     "cache": false,
-    "fields": {
+    "dataFields": {
       "id": "0",
       "labels": [
         "1"

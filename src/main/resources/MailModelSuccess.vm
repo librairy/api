@@ -2,13 +2,11 @@
 
             Model created successfully!!
 
-            It is available as Docker image at: https://cloud.docker.com/u/librairy/repository/docker/$signature
-
-            You can test it by run:
+            It is available as Docker image, so you can test it by run:
 
                     $ docker run -p 8080:7777 $image
 
-            And check it at: http://localhost:8080
+            Then, a Rest-API will be available at: http://localhost:8080
 
             Thanks for using our services!
 

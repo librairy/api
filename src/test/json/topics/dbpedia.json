@@ -15,9 +15,9 @@
     "iterations":"1000",
     "stopwords":"bear"
   },
-  "from": {
+  "dataSource": {
     "cache": false,
-    "fields": {
+    "dataFields": {
       "id": "1",
       "labels": [
         "0"

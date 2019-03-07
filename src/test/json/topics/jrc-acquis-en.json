@@ -15,9 +15,9 @@
     "iterations":"1000",
     "stopwords":"parliament republic eea union market joint animal proposal common financial country aid state service e.on mrs esf"
   },
-  "from": {
+  "dataSource": {
     "cache": false,
-    "fields": {
+    "dataFields": {
       "id": "id",
       "labels": [
         "labels_t"

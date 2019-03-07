@@ -16,9 +16,9 @@
     "iterations":"1000",
     "stopwords":""
   },
-  "from": {
+  "dataSource": {
     "cache": false,
-    "fields": {
+    "dataFields": {
       "id": "id",
       "labels": [
         "labels_t"

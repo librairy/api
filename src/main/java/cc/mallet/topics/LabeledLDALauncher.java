@@ -2,11 +2,11 @@ package cc.mallet.topics;
 
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.*;
-import org.librairy.service.learner.builders.InstanceBuilder;
-import org.librairy.service.learner.builders.MailBuilder;
-import org.librairy.service.learner.model.TopicReport;
-import org.librairy.service.learner.service.StoplabelService;
-import org.librairy.service.learner.service.StopwordService;
+import es.upm.oeg.librairy.api.builders.InstanceBuilder;
+import es.upm.oeg.librairy.api.builders.MailBuilder;
+import es.upm.oeg.librairy.api.model.TopicReport;
+import es.upm.oeg.librairy.api.service.StoplabelService;
+import es.upm.oeg.librairy.api.service.StopwordService;
 import org.librairy.service.modeler.facade.model.TopicWord;
 import org.librairy.service.modeler.service.TopicsService;
 import org.slf4j.Logger;
