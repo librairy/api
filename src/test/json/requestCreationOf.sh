@@ -1,0 +1,1 @@
+curl -u oeg:oeg2018 -vX POST http://localhost:7777/api/$1 -d @$2 --header "Content-Type: application/json"
