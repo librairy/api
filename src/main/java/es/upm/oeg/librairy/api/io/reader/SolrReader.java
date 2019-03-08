@@ -1,4 +1,4 @@
-package es.upm.oeg.librairy.api.io;
+package es.upm.oeg.librairy.api.io.reader;
 
 import com.google.common.base.Strings;
 import es.upm.oeg.librairy.api.facade.model.avro.DataFields;
@@ -39,6 +39,7 @@ public class SolrReader implements Reader {
     private final String idField;
     private final List<String> txtFields;
     private final List<String> labelsFields;
+    private final Long maxSize;
 
     private String nextCursorMark;
     private SolrQuery solrQuery;
@@ -54,6 +55,7 @@ public class SolrReader implements Reader {
         this.idField        = fields.getId();
         this.txtFields      = fields.getText();
         this.labelsFields   = (fields.getLabels() != null)? fields.getLabels() : Collections.emptyList();
+        this.maxSize        = dataSource.getSize();
 
         this.filter         = Strings.isNullOrEmpty(dataSource.getFilter())? "*:*" : dataSource.getFilter();
         this.endpoint       = StringUtils.substringBeforeLast(dataSource.getUrl(),"/");
@@ -98,6 +100,10 @@ public class SolrReader implements Reader {
             }
 
             if (cursorMark.equals(nextCursorMark)) {
+                return Optional.empty();
+            }
+
+            if ((maxSize > 0) && (index.get() > maxSize)){
                 return Optional.empty();
             }
 

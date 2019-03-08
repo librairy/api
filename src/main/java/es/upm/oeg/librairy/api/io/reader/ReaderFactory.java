@@ -1,4 +1,4 @@
-package es.upm.oeg.librairy.api.io;
+package es.upm.oeg.librairy.api.io.reader;
 
 import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
 import es.upm.oeg.librairy.api.facade.model.avro.ReaderFormat;

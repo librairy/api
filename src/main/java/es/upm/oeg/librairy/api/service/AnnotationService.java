@@ -8,6 +8,13 @@ import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import es.upm.oeg.librairy.api.executors.ParallelExecutor;
 import es.upm.oeg.librairy.api.facade.model.avro.AnnotationsRequest;
+import es.upm.oeg.librairy.api.facade.model.avro.DataSink;
+import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
+import es.upm.oeg.librairy.api.io.reader.Reader;
+import es.upm.oeg.librairy.api.io.reader.ReaderFactory;
+import es.upm.oeg.librairy.api.io.writer.Writer;
+import es.upm.oeg.librairy.api.io.writer.WriterFactory;
+import es.upm.oeg.librairy.api.model.Document;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -73,98 +80,65 @@ public class AnnotationService {
 
         try{
 
-            HttpSolrClient solrClient = new HttpSolrClient.Builder(annotationRequest.getDataSource().getUrl()).build();
+            DataSource dataSource = annotationRequest.getDataSource();
+            Reader reader = ReaderFactory.newFrom(dataSource);
 
-            Integer window = 500;
-            SolrQuery solrQuery = new SolrQuery();
-            solrQuery.setRows(window);
-            solrQuery.addSort("id", SolrQuery.ORDER.asc);
+            DataSink dataSink = annotationRequest.getDataSink();
+            Writer writer = WriterFactory.newFrom(dataSink);
 
-            Arrays.asList("id","txt_t").forEach(f -> solrQuery.addField(f));
+            Long maxSize = dataSource.getSize();
+            AtomicInteger counter = new AtomicInteger();
+            Integer interval = maxSize > 0? maxSize > 100? maxSize.intValue()/100 : 1 : 100;
+            Optional<Document> doc;
+            reader.offset(dataSource.getOffset().intValue());
+            ParallelExecutor parallelExecutor = new ParallelExecutor();
+            while(( maxSize<0 || counter.get()<maxSize) &&  (doc = reader.next()).isPresent()){
+                final Document document = doc.get();
+                if (Strings.isNullOrEmpty(document.getText())) continue;
+                if (counter.incrementAndGet() % interval == 0) LOG.info(counter.get() + " document/s annotated");
+                parallelExecutor.submit(() -> {
+                    try {
+                        String id   = document.getId();
+                        String txt  = document.getText();
 
-            String filter = annotationRequest.getDataSource().getFilter();
-            String query = (Strings.isNullOrEmpty(filter))? "*:*" : filter;
-            solrQuery.setQuery(query);
+                        Map<Integer, List<String>> topicsMap = new HashMap<>();
 
-            String nextCursorMark   = CursorMarkParams.CURSOR_MARK_START;
-            AtomicInteger index = new AtomicInteger();
-            ParallelExecutor executor = new ParallelExecutor();
-            while(true){
+                        ClassRequest request = new ClassRequest();
+                        request.setText(txt);
+                        HttpResponse<JsonNode> response = Unirest
+                                .post(annotationRequest.getModelEndpoint() + "/classes")
+                                .body(request).asJson();
+                        JSONArray topics = response.getBody().getArray();
 
-                String cursorMark       = nextCursorMark;
-                solrQuery.set(CursorMarkParams.CURSOR_MARK_PARAM, cursorMark);
+                        for(int i=0;i<topics.length();i++){
+                            JSONObject topic = topics.getJSONObject(i);
+                            Integer level   = topic.getInt("id");
+                            String tId      = topic.getString("name");
 
+                            if (!topicsMap.containsKey(level)) topicsMap.put(level,new ArrayList<>());
 
-                QueryResponse rsp = solrClient.query(solrQuery);
-                nextCursorMark = rsp.getNextCursorMark();
-
-                SolrDocumentList results = rsp.getResults();
-
-                for(SolrDocument solrDoc : results){
-
-                    executor.submit(() -> {
-                        try{
-                            String id   = (String) solrDoc.get("id");
-                            String txt  = (String) solrDoc.get("txt_t");
-
-                            if (Strings.isNullOrEmpty(txt)) return;
-
-                            Map<Integer, List<String>> topicsMap = new HashMap<>();
-
-                            ClassRequest request = new ClassRequest();
-                            request.setText(txt);
-                            HttpResponse<JsonNode> response = Unirest
-                                    .post(annotationRequest.getModelEndpoint() + "/classes")
-                                    .body(request).asJson();
-                            JSONArray topics = response.getBody().getArray();
-
-                            for(int i=0;i<topics.length();i++){
-                                JSONObject topic = topics.getJSONObject(i);
-                                Integer level   = topic.getInt("id");
-                                String tId      = topic.getString("name");
-
-                                if (!topicsMap.containsKey(level)) topicsMap.put(level,new ArrayList<>());
-
-                                topicsMap.get(level).add(tId);
-                            }
-
-                            SolrInputDocument sd = new SolrInputDocument();
-                            sd.addField("id",id);
-
-                            for(Map.Entry<Integer,List<String>> hashLevel : topicsMap.entrySet()){
-
-                                String fieldName = "topics"+hashLevel.getKey()+"_t";
-                                String td = hashLevel.getValue().stream().map(i -> "t" + i).collect(Collectors.joining(" "));
-                                Map<String,Object> updatedField = new HashMap<>();
-                                updatedField.put("set", td);
-                                sd.addField(fieldName, updatedField);
-                            }
-
-                            solrClient.add(sd);
-
-                            LOG.info("Document " + id + " annotated [" + index.incrementAndGet() + "]");
-
-                            if (index.get() % 100 == 0){
-                                LOG.info("Committing partial annotations");
-                                solrClient.commit();
-                            }
-                        }catch (Exception e){
-                            LOG.error("Error annotating doc: " + solrDoc, e);
+                            topicsMap.get(level).add(tId);
                         }
-                    });
-                }
-                solrClient.commit();
 
-                if (cursorMark.equals(nextCursorMark)) break;
+                        Map<String,Object> data = new HashMap<String, Object>();
+                        for(Map.Entry<Integer,List<String>> hashLevel : topicsMap.entrySet()){
 
-                if (results.size() < window) break;
+                            String fieldName = "topics"+hashLevel.getKey()+"_t";
+                            String td        = hashLevel.getValue().stream().map(i -> "t" + i).collect(Collectors.joining(" "));
+                            data.put(fieldName, td);
+                        }
 
+                        writer.save(id, data);
+                    } catch (Exception e) {
+                        LOG.error("Unexpected error adding new document to corpus",e);
+                    }
+                });
             }
-            executor.awaitTermination(1, TimeUnit.HOURS);
-            solrClient.commit();
+            parallelExecutor.awaitTermination(1, TimeUnit.HOURS);
+            writer.close();
 
             mailService.notifyAnnotation(annotationRequest,"Annotation completed");
-            LOG.info("Completed!");
+            LOG.info("Annotation Completed!");
         }catch (Exception e){
             LOG.error("Unexpected error",e);
             mailService.notifyAnnotationError(annotationRequest, e.getMessage());

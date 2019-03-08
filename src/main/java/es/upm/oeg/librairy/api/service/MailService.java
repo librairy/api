@@ -20,6 +20,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Properties;
 
@@ -116,9 +117,8 @@ public class MailService {
             Template t = velocityEngine.getTemplate("MailAnnotationSuccess.vm");
 
             VelocityContext context = new VelocityContext();
-            String image = message;
-            String signature = StringUtils.substringBefore(image,":");
-            context.put("source", request.getDataSource().getUrl() + "?" + request.getDataSource().getFilter());
+            String filter = Strings.isNullOrEmpty(request.getDataSource().getFilter())? "" : request.getDataSource().getFilter();
+            context.put("source", request.getDataSource().getUrl() + "?" + URLEncoder.encode(filter, "UTF-8"));
             context.put("model", request.getModelEndpoint());
 
             StringWriter fw = new StringWriter();
