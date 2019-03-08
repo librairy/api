@@ -3,12 +3,12 @@ services:
   librairy-api:
     image: librairy/api:latest
     ports:
-     - "7777:7777"
+     - "8080:7777"
     environment:
       - LIBRAIRY_API_USERS=oeg:oeg2018
       - JAVA_OPTS=-Xmx53248m
-      - REST_PATH=/learner
+      - REST_PATH=/api
       - NLP_ENDPOINT=http://librairy.linkeddata.es/%%
     volumes:
-     - ./tmp:/librairy
+     - ./data:/librairy
      - /var/run/docker.sock:/var/run/docker.sock

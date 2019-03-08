@@ -14,6 +14,8 @@ import com.optimaize.langdetect.profiles.LanguageProfileReader;
 import com.optimaize.langdetect.text.CommonTextObjectFactories;
 import com.optimaize.langdetect.text.TextObject;
 import com.optimaize.langdetect.text.TextObjectFactory;
+import es.upm.oeg.librairy.api.io.reader.*;
+import es.upm.oeg.librairy.api.io.reader.StringReader;
 import es.upm.oeg.librairy.api.model.Document;
 import org.librairy.service.modeler.clients.LibrairyNlpClient;
 import org.librairy.service.modeler.service.BoWService;
@@ -114,11 +116,12 @@ public class CorpusBuilder {
             row.append(labels).append(SEPARATOR);
             updateLanguage(document.getText());
             // bow from nlp-service
-            String text = raw? document.getText().replaceAll("\\P{Print}", "") : BoWService.toText(librairyNlpClient.bow(document.getText().replaceAll("\\P{Print}", ""), language, Arrays.asList(PoS.NOUN, PoS.VERB, PoS.ADJECTIVE), multigrams));
+            String content = StringReader.hardFormat(document.getText());
+            String text = raw? content : BoWService.toText(librairyNlpClient.bow( content, language, Arrays.asList(PoS.NOUN, PoS.VERB, PoS.ADJECTIVE), multigrams));
             row.append(text);
             updated = DateBuilder.now();
             write(row.toString());
-            LOG.debug("Added document: [" + document.getId() +"] to corpus");
+            LOG.info("Added document: [" + document.getId() +"] to corpus");
         }finally{
             pendingDocs.decrementAndGet();
         }
