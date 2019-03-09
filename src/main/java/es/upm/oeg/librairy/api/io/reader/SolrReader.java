@@ -37,6 +37,7 @@ public class SolrReader implements Reader {
     private final String collection;
     private final String filter;
     private final String idField;
+    private final String nameField;
     private final List<String> txtFields;
     private final List<String> labelsFields;
     private final Long maxSize;
@@ -53,6 +54,7 @@ public class SolrReader implements Reader {
 
         DataFields fields = dataSource.getDataFields();
         this.idField        = fields.getId();
+        this.nameField      = Strings.isNullOrEmpty(fields.getName())? null : fields.getName();
         this.txtFields      = fields.getText();
         this.labelsFields   = (fields.getLabels() != null)? fields.getLabels() : Collections.emptyList();
         this.maxSize        = dataSource.getSize();
@@ -67,6 +69,7 @@ public class SolrReader implements Reader {
         this.solrQuery = new SolrQuery();
         solrQuery.setRows(window);
         solrQuery.addField(idField);
+        if (!Strings.isNullOrEmpty(nameField)) solrQuery.addField(nameField);
         txtFields.forEach(f -> solrQuery.addField(f));
         labelsFields.forEach(f -> solrQuery.addField(f));
         solrQuery.setQuery(filter);
@@ -114,9 +117,14 @@ public class SolrReader implements Reader {
             String id = (String) solrDoc.get(idField);
             document.setId(id);
 
+            if (!Strings.isNullOrEmpty(nameField)){
+                document.setName((String) solrDoc.get(nameField));
+            }
+
             StringBuilder txt = new StringBuilder();
             txtFields.stream().filter(tf -> solrDoc.containsKey(tf)).forEach(tf -> txt.append(StringReader.hardFormat(solrDoc.getFieldValue(tf).toString())).append(" "));
             document.setText(txt.toString());
+            document.setFormat("solr_document");
 
             if (!labelsFields.isEmpty()){
                 StringBuilder labels = new StringBuilder();

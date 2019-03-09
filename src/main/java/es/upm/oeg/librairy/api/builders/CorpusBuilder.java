@@ -17,6 +17,7 @@ import com.optimaize.langdetect.text.TextObjectFactory;
 import es.upm.oeg.librairy.api.io.reader.*;
 import es.upm.oeg.librairy.api.io.reader.StringReader;
 import es.upm.oeg.librairy.api.model.Document;
+import es.upm.oeg.librairy.api.service.LanguageService;
 import org.librairy.service.modeler.clients.LibrairyNlpClient;
 import org.librairy.service.modeler.service.BoWService;
 import org.librairy.service.nlp.facade.model.PoS;
@@ -38,7 +39,9 @@ public class CorpusBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(CorpusBuilder.class);
 
-    LibrairyNlpClient librairyNlpClient;
+    private final LanguageService languageService;
+
+    private final LibrairyNlpClient librairyNlpClient;
 
     public static final String SEPARATOR = ";;";
 
@@ -61,40 +64,14 @@ public class CorpusBuilder {
             .addEscape('\t'," ")
             .build();
 
-    private LanguageDetector languageDetector;
-    private TextObjectFactory textObjectFactory;
 
-
-    public CorpusBuilder(Path filePath, LibrairyNlpClient librairyNlpClient) throws IOException {
+    public CorpusBuilder(Path filePath, LibrairyNlpClient librairyNlpClient, LanguageService languageService) throws IOException {
 
         this.filePath = filePath;
 
         this.librairyNlpClient = librairyNlpClient;
 
-        //load all languages:
-        LanguageProfileReader langReader = new LanguageProfileReader();
-
-        List<LanguageProfile> languageProfiles = new ArrayList<>();
-
-        Iterator it = BuiltInLanguages.getLanguages().iterator();
-
-        List<String> availableLangs = Arrays.asList(new String[]{"en","es","fr","de","pt"});
-        while(it.hasNext()) {
-            LdLocale locale = (LdLocale)it.next();
-            if (availableLangs.contains(locale.getLanguage())) {
-                LOG.info("language added: " + locale);
-                languageProfiles.add(langReader.readBuiltIn(locale));
-            }
-        }
-
-
-        //build language detector:
-        this.languageDetector = LanguageDetectorBuilder.create(NgramExtractors.standard())
-                .withProfiles(languageProfiles)
-                .build();
-
-        //create a text object factory
-        this.textObjectFactory = CommonTextObjectFactories.forDetectingOnLargeText();
+        this.languageService = languageService;
     }
 
     public Integer getNumDocs(){
@@ -167,21 +144,7 @@ public class CorpusBuilder {
     }
 
     private String updateLanguage(String text){
-        if (Strings.isNullOrEmpty(text)){
-            LOG.warn("empty text! english by default");
-            return DEFAULT_LANG;
-        }
-        if (Strings.isNullOrEmpty(language)){
-            LOG.info("detecting language from text: " + text.substring(0, text.length()>50? 50 : text.length()));
-            TextObject textObject = textObjectFactory.forText(text);
-            Optional<LdLocale> lang = languageDetector.detect(textObject);
-            if (!lang.isPresent()){
-                LOG.warn("language not detected! english by default");
-                lang = Optional.of(LdLocale.fromString(DEFAULT_LANG));
-            }
-            LOG.info("Language=" + lang.get());
-            language = lang.get().getLanguage();
-        }
+        language = Strings.isNullOrEmpty(language)? languageService.getLanguage(text) : language;
         return language;
     }
 

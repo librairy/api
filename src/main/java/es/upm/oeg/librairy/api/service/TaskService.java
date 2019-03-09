@@ -28,6 +28,12 @@ public class TaskService {
     @Autowired
     AnnotationService annotationService;
 
+    @Autowired
+    DocumentService documentService;
+
+    @Autowired
+    SetService setService;
+
     private ExecutorService executors;
 
     @PostConstruct
@@ -50,6 +56,12 @@ public class TaskService {
                                 break;
                             case ANNOTATIONS:
                                 annotationService.create(task.getAnnotationsRequest());
+                                break;
+                            case DOCUMENTS:
+                                documentService.create(task.getDocumentsRequest());
+                                break;
+                            case SETS:
+                                setService.create(task.getSetRequest());
                                 break;
                             default: LOG.warn("Task type not found: " + task);
                         }

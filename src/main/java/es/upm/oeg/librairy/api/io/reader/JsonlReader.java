@@ -48,13 +48,16 @@ public class  JsonlReader extends FileReader{
             if (map.containsKey("id")) {
                 document.setId(retrieve(jsonObject, map.get("id"), false));
             }
+            if (map.containsKey("name")) {
+                document.setName(retrieve(jsonObject, map.get("name"), false));
+            }
             if (map.containsKey("text"))    {
                 document.setText(retrieve(jsonObject, map.get("text"), true));
             }
             if (map.containsKey("labels")){
                 document.setLabels(Arrays.asList(retrieve(jsonObject, map.get("labels"), false).split(" ")));
             }
-
+            document.setFormat("json");
             return Optional.of(document);
 
         }catch (Exception e){

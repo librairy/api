@@ -28,6 +28,9 @@ public class WorkspaceService {
     @Autowired
     LibrairyNlpClient librairyNlpClient;
 
+    @Autowired
+    LanguageService languageService;
+
     @Value("#{environment['OUTPUT_DIR']?:'${output.dir}'}")
     String outputDir;
 
@@ -36,7 +39,7 @@ public class WorkspaceService {
         Path workspacePath = getPath(request);
         if (!workspacePath.toFile().getParentFile().exists()) workspacePath.toFile().getParentFile().mkdirs();
         if (!request.getDataSource().getCache() && workspacePath.toFile().exists()) workspacePath.toFile().delete();
-        CorpusBuilder corpusBuilder = new CorpusBuilder(workspacePath, librairyNlpClient);
+        CorpusBuilder corpusBuilder = new CorpusBuilder(workspacePath, librairyNlpClient, languageService);
         if (request.getDataSource().getCache()) corpusBuilder.load();
         return corpusBuilder;
     }

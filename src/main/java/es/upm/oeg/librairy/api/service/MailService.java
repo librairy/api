@@ -2,6 +2,7 @@ package es.upm.oeg.librairy.api.service;
 
 import com.google.common.base.Strings;
 import es.upm.oeg.librairy.api.facade.model.avro.AnnotationsRequest;
+import es.upm.oeg.librairy.api.facade.model.avro.DocumentsRequest;
 import es.upm.oeg.librairy.api.facade.model.avro.TopicsRequest;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -50,6 +51,24 @@ public class MailService {
         velocityEngine.init();
 
         LOG.info("Mail Service initialized");
+    }
+
+    public void notifyDocumentError(DocumentsRequest request, String message){
+
+        try {
+            LOG.info("Mail error notification of " + request + " because of " + message);
+            Template t = velocityEngine.getTemplate("MailDocumentError.vm");
+
+            VelocityContext context = new VelocityContext();
+
+            StringWriter fw = new StringWriter();
+            t.merge(context, fw);
+            fw.close();
+            mailTo(request.getContactEmail(), "[documents] Something went wrong..", fw.toString() );
+        } catch (IOException e) {
+            LOG.error("Unexpected error sending an email",e);
+        }
+
     }
 
     public void notifyModelError(TopicsRequest request, String message){
@@ -104,6 +123,25 @@ public class MailService {
             t.merge(context, fw);
             fw.close();
             mailTo(request.getContactEmail(), "["+ request.getName()+"] Your Topic Model is ready!", fw.toString() );
+        } catch (IOException e) {
+            LOG.error("Unexpected error sending an email",e);
+        }
+
+    }
+
+    public void notifyDocumentCreation(DocumentsRequest request, String message){
+
+        try {
+            LOG.info("Mail creation notification of " + request + " because of " + message);
+            Template t = velocityEngine.getTemplate("MailDocumentSuccess.vm");
+
+            VelocityContext context = new VelocityContext();
+            context.put("out", request.getDataSink().getUrl());
+
+            StringWriter fw = new StringWriter();
+            t.merge(context, fw);
+            fw.close();
+            mailTo(request.getContactEmail(), "[documents] Your documents are ready!", fw.toString() );
         } catch (IOException e) {
             LOG.error("Unexpected error sending an email",e);
         }

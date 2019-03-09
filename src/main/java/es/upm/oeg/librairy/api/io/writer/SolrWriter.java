@@ -42,7 +42,7 @@ public class SolrWriter implements Writer {
         Boolean saved = false;
         try{
             SolrInputDocument sd = new SolrInputDocument();
-            sd.addField("id",id);
+            sd.addField("id",id.replaceAll(" ",""));
 
             for(Map.Entry<String,Object> entry : data.entrySet()){
                 String fieldName = entry.getKey();
@@ -54,9 +54,9 @@ public class SolrWriter implements Writer {
 
             solrClient.add(sd);
 
-            LOG.info("Document " + id + " annotated [" + counter.incrementAndGet() + "]");
+            LOG.info("[" + counter.incrementAndGet() + "] Document '" + id + "' saved");
 
-            if (counter.incrementAndGet() % 100 == 0){
+            if (counter.get() % 100 == 0){
                 LOG.info("Committing partial annotations["+ this.counter.get() +"]");
                 solrClient.commit();
             }

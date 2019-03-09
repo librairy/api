@@ -1,0 +1,23 @@
+{
+  "contactEmail": "cbadenes@fi.upm.es",
+  "dataSink": {
+    "format": "SOLR_CORE",
+    "url": "http://localhost:8983/solr/documents"
+  },
+  "dataSource": {
+    "dataFields": {
+      "id": "1",
+      "labels": [
+        "0"
+      ],
+      "text": [
+        "2"
+      ]
+    },
+    "filter":",",
+    "format": "CSV_TAR_GZ",
+    "offset": 0,
+    "size": -1,
+    "url": "https://delicias.dia.fi.upm.es/nextcloud/index.php/s/Kg2rk93qS6jHpCX/download"
+  }
+}

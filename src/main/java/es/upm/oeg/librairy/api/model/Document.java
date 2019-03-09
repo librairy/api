@@ -16,9 +16,13 @@ public class Document {
 
     private String id;
 
+    private String name;
+
     private String text;
 
     private List<String> labels = new ArrayList<>();
+
+    private String format;
 
     public Document() {
     }
@@ -32,6 +36,22 @@ public class Document {
         this.id = id;
         this.text = text;
         this.labels = labels;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     public String getId() {

@@ -23,7 +23,7 @@ import javax.annotation.PreDestroy;
 
 @RestController
 @RequestMapping("/annotations")
-@Api(tags="/annotations", description = "topics annotations")
+@Api(tags="/annotations", description = "save topic distributions")
 public class AnnotationsServiceController {
 
     private static final Logger LOG = LoggerFactory.getLogger(AnnotationsServiceController.class);
@@ -42,7 +42,7 @@ public class AnnotationsServiceController {
     }
 
 
-    @ApiOperation(value = "annotate", nickname = "postAnnotations", response=String.class)
+    @ApiOperation(value = "annotate documents", nickname = "postAnnotations", response=String.class)
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "Accepted", response = String.class),
     })

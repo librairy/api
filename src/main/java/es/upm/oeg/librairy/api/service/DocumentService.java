@@ -1,0 +1,115 @@
+package es.upm.oeg.librairy.api.service;
+
+import com.google.common.base.Strings;
+import es.upm.oeg.librairy.api.builders.DateBuilder;
+import es.upm.oeg.librairy.api.executors.ParallelExecutor;
+import es.upm.oeg.librairy.api.facade.model.avro.DataSink;
+import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
+import es.upm.oeg.librairy.api.facade.model.avro.DocumentsRequest;
+import es.upm.oeg.librairy.api.io.reader.Reader;
+import es.upm.oeg.librairy.api.io.reader.ReaderFactory;
+import es.upm.oeg.librairy.api.io.writer.Writer;
+import es.upm.oeg.librairy.api.io.writer.WriterFactory;
+import es.upm.oeg.librairy.api.model.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+/**
+ * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
+ */
+
+@Component
+public class DocumentService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DocumentService.class);
+
+    @Autowired
+    MailService mailService;
+
+    @Autowired
+    LanguageService languageService;
+
+
+
+    public boolean create(DocumentsRequest request){
+        try{
+            LOG.info("Ready to create documents from: " + request);
+            try{
+                DataSource datasource = request.getDataSource();
+                Reader reader = ReaderFactory.newFrom(datasource);
+
+                DataSink dataSink = request.getDataSink();
+                Writer writer = WriterFactory.newFrom(dataSink);
+
+                Long maxSize = datasource.getSize();
+                AtomicInteger counter = new AtomicInteger();
+                Integer interval = maxSize > 0? maxSize > 100? maxSize.intValue()/100 : 1 : 100;
+                Optional<Document> doc;
+                reader.offset(datasource.getOffset().intValue());
+                ParallelExecutor parallelExecutor = new ParallelExecutor();
+                final String date = DateBuilder.now();
+
+                final String source = Strings.isNullOrEmpty(datasource.getFilter())? datasource.getUrl() : datasource.getUrl()+"?"+ URLEncoder.encode(datasource.getFilter(),"UTF-8");
+
+                final ConcurrentHashMap<String,Integer> errors = new ConcurrentHashMap<>();
+                while(( maxSize<0 || counter.get()<maxSize) &&  (doc = reader.next()).isPresent()){
+                    final Document document = doc.get();
+                    if (Strings.isNullOrEmpty(document.getText())) continue;
+                    if (counter.incrementAndGet() % interval == 0) LOG.info(counter.get() + " documents indexed");
+                    parallelExecutor.submit(() -> {
+                        try {
+
+                            String id = document.getId();
+                            Map<String,Object> fields = new HashMap<>();
+
+                            fields.put("name_s", document.getName());
+                            String lang = languageService.getLanguage(document.getId());
+
+                            if (!document.getLabels().isEmpty()) fields.put("labels_t", document.getLabels().stream().collect(Collectors.joining(" ")));
+                            if (!Strings.isNullOrEmpty(document.getText())) {
+                                fields.put("txt_t",document.getText());
+                                fields.put("size_i",document.getText().length());
+                                lang = languageService.getLanguage(document.getText());
+                            }
+                            fields.put("lang_s",lang);
+                            fields.put("date_dt", date);
+                            fields.put("source_s",source);
+                            fields.put("format_s",document.getFormat());
+
+                            writer.save(id,fields);
+                        } catch (Exception e) {
+                            LOG.error("Unexpected error creating document",e);
+                            errors.put(e.getClass().getName(),1);
+                        }
+                    });
+                }
+                parallelExecutor.awaitTermination(1, TimeUnit.HOURS);
+                writer.close();
+                if (errors.isEmpty()) mailService.notifyDocumentCreation(request, "Documents created");
+                else mailService.notifyDocumentError(request, "Documents cannot be created");
+                return true;
+            }catch (Exception e){
+                LOG.error("Unexpected error harvesting datasource: " + request, e);
+                mailService.notifyDocumentError(request, "DataSource error. For details consult with your system administrator.");
+                return false;
+            }
+
+        }catch (Exception e){
+            LOG.error("Error creating documents",e);
+            if (request != null) mailService.notifyDocumentError(request, "Documents not created. For details consult with your system administrator.  ");
+            return false;
+        }
+    }
+
+}

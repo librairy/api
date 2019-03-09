@@ -52,6 +52,16 @@ public class CSVReader extends FileReader{
 
                 document.setId(id.toString());
             }
+
+            if (map.containsKey("name")){
+                StringBuilder name = new StringBuilder();
+                for(Integer i : map.get("name")){
+                    name.append(format(values[i]));
+                }
+
+                document.setName(name.toString());
+            }
+
             if (map.containsKey("text")) {
                 StringBuilder text = new StringBuilder();
                 for(Integer i : map.get("text")){
@@ -68,6 +78,7 @@ public class CSVReader extends FileReader{
 
                 document.setLabels(Arrays.asList(labels.toString().split(labelSeparator)));
             }
+            document.setFormat("csv");
 
             return Optional.of(document);
         } catch (ArrayIndexOutOfBoundsException e){

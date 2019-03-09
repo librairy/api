@@ -17,7 +17,7 @@ public class DateBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(DateBuilder.class);
 
     private static TimeZone tz = TimeZone.getTimeZone("UTC");
-    private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+    private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
 
     static{

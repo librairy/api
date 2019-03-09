@@ -24,7 +24,7 @@ import javax.annotation.PreDestroy;
 
 @RestController
 @RequestMapping("/topics")
-@Api(tags="/topics", description = "topics management")
+@Api(tags="/topics", description = "create topic models")
 public class TopicsServiceController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TopicsServiceController.class);
@@ -44,7 +44,7 @@ public class TopicsServiceController {
     }
 
 
-    @ApiOperation(value = "discover", nickname = "postTopics", response=String.class)
+    @ApiOperation(value = "create topic models", nickname = "postTopics", response=String.class)
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "Accepted", response = String.class),
     })

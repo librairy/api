@@ -2,6 +2,7 @@ package es.upm.oeg.librairy.api.model;
 
 import es.upm.oeg.librairy.api.facade.model.avro.AnnotationsRequest;
 import es.upm.oeg.librairy.api.facade.model.avro.DocumentsRequest;
+import es.upm.oeg.librairy.api.facade.model.avro.SetRequest;
 import es.upm.oeg.librairy.api.facade.model.avro.TopicsRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +14,13 @@ import org.slf4j.LoggerFactory;
 public class Task {
 
     private static final Logger LOG = LoggerFactory.getLogger(Task.class);
-
+    private SetRequest setRequest;
     private TopicsRequest topicsRequest;
     private AnnotationsRequest annotationsRequest;
     private DocumentsRequest documentsRequest;
 
     public enum Type {
-        TOPICS, ANNOTATIONS, DOCUMENTS, CLEAN
+        TOPICS, ANNOTATIONS, DOCUMENTS, SETS, CLEAN
     }
 
     private final Type type;
@@ -43,6 +44,11 @@ public class Task {
         this.annotationsRequest = annotationsRequest;
     }
 
+    public Task(SetRequest setRequest) {
+        this.type = Type.SETS;
+        this.setRequest = setRequest;
+    }
+
     public Type getType() {
         return type;
     }
@@ -59,6 +65,9 @@ public class Task {
         return documentsRequest;
     }
 
+    public SetRequest getSetRequest() {
+        return setRequest;
+    }
 
     @Override
     public String toString() {
@@ -66,6 +75,7 @@ public class Task {
                 "topicsRequest=" + topicsRequest +
                 ", annotationsRequest=" + annotationsRequest +
                 ", documentsRequest=" + documentsRequest +
+                ", setsRequest=" + setRequest +
                 ", type=" + type +
                 '}';
     }
