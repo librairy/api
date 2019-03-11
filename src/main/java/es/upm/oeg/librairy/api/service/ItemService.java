@@ -68,9 +68,6 @@ public class ItemService {
         // convert hash into query params
 
 
-
-
-
         List<QueryDocument> simDocs = searcher.getBy(
                 hash,
                 dataSource.getFilter(),
@@ -79,6 +76,9 @@ public class ItemService {
                 true);
 
         List<Item> items = simDocs.stream().map(qd -> Item.newBuilder().setId(qd.getId()).setName(String.valueOf(qd.getData().get(nameField))).setScore(qd.getScore()).build()).collect(Collectors.toList());
+
+
+
 
         return items;
 

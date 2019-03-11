@@ -9,6 +9,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.librairy.service.modeler.facade.rest.model.ClassRequest;
+import org.librairy.service.modeler.facade.rest.model.InferenceRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -80,4 +81,26 @@ public class InferenceService {
         return topicsMap;
 
     }
+
+    public List<Double> getTopicsDistribution(String text, String model) throws UnirestException {
+
+
+        InferenceRequest request = new InferenceRequest();
+        request.setText(text);
+        request.setTopics(false);
+        HttpResponse<JsonNode> response = Unirest
+                .post(model + "/inferences")
+                .body(request).asJson();
+        JSONArray topics = response.getBody().getObject().getJSONArray("vector");
+
+        List<Double> topicDist = new ArrayList<>();
+        for(int i=0;i<topics.length();i++){
+            Double dist  = topics.getDouble(i);
+            topicDist.add(dist);
+        }
+
+        return topicDist;
+
+    }
+
 }
