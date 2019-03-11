@@ -64,7 +64,7 @@ public class AnnotationService {
 
                         Map<String,Object> data = HashTopicBuilder.from(topicsMap);
 
-                        writer.save(id, data);
+                        writer.update(id, data);
                     } catch (Exception e) {
                         LOG.error("Unexpected error adding new document to corpus",e);
                     }

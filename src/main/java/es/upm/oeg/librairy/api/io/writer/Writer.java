@@ -9,6 +9,8 @@ public interface Writer {
 
     Boolean save(String id, Map<String,Object> data);
 
+    Boolean update(String id, Map<String,Object> data);
+
     Boolean close();
 
     void offset(Integer numLines);

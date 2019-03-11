@@ -38,7 +38,7 @@ public class SolrWriter implements Writer {
 
 
     @Override
-    public Boolean save(String id, Map<String, Object> data) {
+    public Boolean update(String id, Map<String, Object> data) {
         Boolean saved = false;
         try{
             SolrInputDocument sd = new SolrInputDocument();
@@ -50,6 +50,34 @@ public class SolrWriter implements Writer {
                 Map<String,Object> updatedField = new HashMap<>();
                 updatedField.put("set", td);
                 sd.addField(fieldName, updatedField);
+            }
+
+            solrClient.add(sd);
+
+            LOG.info("[" + counter.incrementAndGet() + "] Document '" + id + "' saved");
+
+            if (counter.get() % 100 == 0){
+                LOG.info("Committing partial annotations["+ this.counter.get() +"]");
+                solrClient.commit();
+            }
+
+            saved = true;
+        }catch (Exception e){
+            LOG.error("Unexpected error annotating doc: " + id, e);
+        }
+        return saved;
+
+    }
+
+    @Override
+    public Boolean save(String id, Map<String, Object> data) {
+        Boolean saved = false;
+        try{
+            SolrInputDocument sd = new SolrInputDocument();
+            sd.addField("id",id.replaceAll(" ",""));
+
+            for(String fieldName : data.keySet()){
+                sd.addField(fieldName, data.get(fieldName));
             }
 
             solrClient.add(sd);
