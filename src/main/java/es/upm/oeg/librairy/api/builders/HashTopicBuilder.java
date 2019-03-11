@@ -26,7 +26,7 @@ public class HashTopicBuilder {
         Map<String,Object> data = new HashMap<String, Object>();
         for(Map.Entry<Integer,List<String>> hashLevel : topicsMap.entrySet()){
             String fieldName = "topics"+hashLevel.getKey()+"_t";
-            String td        = hashLevel.getValue().stream().map(i -> "t"+i).collect(Collectors.joining(" "));
+            String td        = hashLevel.getValue().stream().collect(Collectors.joining(" "));
             data.put(fieldName, td);
         }
         return data;
