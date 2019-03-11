@@ -27,7 +27,7 @@ public class WriterFactory {
 
         switch (format){
             case SOLR_CORE: return new SolrWriter(dataSink);
-            default: throw new RuntimeException("No reader found by hardFormat: " + format);
+            default: throw new RuntimeException("No reader found by format: " + format);
         }
 
     }

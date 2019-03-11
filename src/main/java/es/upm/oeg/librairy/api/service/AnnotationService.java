@@ -1,11 +1,7 @@
 package es.upm.oeg.librairy.api.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Strings;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.ObjectMapper;
-import com.mashape.unirest.http.Unirest;
+import es.upm.oeg.librairy.api.builders.HashTopicBuilder;
 import es.upm.oeg.librairy.api.executors.ParallelExecutor;
 import es.upm.oeg.librairy.api.facade.model.avro.AnnotationsRequest;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSink;
@@ -15,26 +11,14 @@ import es.upm.oeg.librairy.api.io.reader.ReaderFactory;
 import es.upm.oeg.librairy.api.io.writer.Writer;
 import es.upm.oeg.librairy.api.io.writer.WriterFactory;
 import es.upm.oeg.librairy.api.model.Document;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.common.params.CursorMarkParams;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.librairy.service.modeler.facade.rest.model.ClassRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
@@ -47,33 +31,8 @@ public class AnnotationService {
     @Autowired
     MailService mailService;
 
-    static{
-        Unirest.setObjectMapper(new ObjectMapper() {
-            private com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper
-                    = new com.fasterxml.jackson.databind.ObjectMapper();
-
-            public <T> T readValue(String value, Class<T> valueType) {
-                try {
-                    return jacksonObjectMapper.readValue(value, valueType);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            public String writeValue(Object value) {
-                try {
-                    return jacksonObjectMapper.writeValueAsString(value);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-
-        Unirest.setTimeouts(20000, 120000);
-        Unirest.setDefaultHeader("accept", "application/json");
-        Unirest.setDefaultHeader("Content-Type", "application/json");
-
-    }
+    @Autowired
+    InferenceService inferenceService;
 
 
     public void create(AnnotationsRequest annotationRequest){
@@ -101,32 +60,9 @@ public class AnnotationService {
                         String id   = document.getId();
                         String txt  = document.getText();
 
-                        Map<Integer, List<String>> topicsMap = new HashMap<>();
+                        Map<Integer, List<String>> topicsMap = inferenceService.getTopicsByRelevance(txt, annotationRequest.getModelEndpoint());
 
-                        ClassRequest request = new ClassRequest();
-                        request.setText(txt);
-                        HttpResponse<JsonNode> response = Unirest
-                                .post(annotationRequest.getModelEndpoint() + "/classes")
-                                .body(request).asJson();
-                        JSONArray topics = response.getBody().getArray();
-
-                        for(int i=0;i<topics.length();i++){
-                            JSONObject topic = topics.getJSONObject(i);
-                            Integer level   = topic.getInt("id");
-                            String tId      = topic.getString("name");
-
-                            if (!topicsMap.containsKey(level)) topicsMap.put(level,new ArrayList<>());
-
-                            topicsMap.get(level).add(tId);
-                        }
-
-                        Map<String,Object> data = new HashMap<String, Object>();
-                        for(Map.Entry<Integer,List<String>> hashLevel : topicsMap.entrySet()){
-
-                            String fieldName = "topics"+hashLevel.getKey()+"_t";
-                            String td        = hashLevel.getValue().stream().map(i -> "t" + i).collect(Collectors.joining(" "));
-                            data.put(fieldName, td);
-                        }
+                        Map<String,Object> data = HashTopicBuilder.from(topicsMap);
 
                         writer.save(id, data);
                     } catch (Exception e) {

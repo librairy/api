@@ -1,6 +1,7 @@
 package es.upm.oeg.librairy.api.io.reader;
 
 import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
+import es.upm.oeg.librairy.api.model.QueryDocument;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import es.upm.oeg.librairy.api.model.Document;
@@ -9,10 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>

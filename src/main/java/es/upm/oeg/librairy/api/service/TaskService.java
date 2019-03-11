@@ -32,7 +32,7 @@ public class TaskService {
     DocumentService documentService;
 
     @Autowired
-    SetService setService;
+    ItemService setService;
 
     private ExecutorService executors;
 
@@ -59,9 +59,6 @@ public class TaskService {
                                 break;
                             case DOCUMENTS:
                                 documentService.create(task.getDocumentsRequest());
-                                break;
-                            case SETS:
-                                setService.create(task.getSetRequest());
                                 break;
                             default: LOG.warn("Task type not found: " + task);
                         }

@@ -3,6 +3,7 @@ package es.upm.oeg.librairy.api.io.reader;
 import com.google.common.base.Strings;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
 import es.upm.oeg.librairy.api.model.Document;
+import es.upm.oeg.librairy.api.model.QueryDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +90,5 @@ public class CSVReader extends FileReader{
             return Optional.of(new Document());
         }
     }
-
-
 
 }

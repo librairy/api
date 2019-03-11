@@ -1,5 +1,6 @@
 package es.upm.oeg.librairy.api.service;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import es.upm.oeg.librairy.api.builders.DateBuilder;
 import es.upm.oeg.librairy.api.facade.model.avro.*;
 import org.apache.avro.AvroRemoteException;
@@ -7,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
@@ -19,6 +23,9 @@ public class ApiService implements LibrairyApi{
 
     @Autowired
     QueueService queueService;
+
+    @Autowired
+    ItemService setService;
 
 
     @Override
@@ -55,9 +62,14 @@ public class ApiService implements LibrairyApi{
     }
 
     @Override
-    public Set getSet(SetRequest setRequest) throws AvroRemoteException {
-        //TODO
-        throw new RuntimeException("not implemented yet");
+    public List<Item> createItems(ItemsRequest setRequest) throws AvroRemoteException {
+        try {
+            return setService.create(setRequest);
+        } catch (IOException e) {
+            throw new AvroRemoteException(e);
+        } catch (UnirestException e) {
+            throw new AvroRemoteException(e);
+        }
     }
 
     @Override

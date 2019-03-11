@@ -3,6 +3,7 @@ package es.upm.oeg.librairy.api.io.reader;
 import com.google.common.base.Strings;
 import es.upm.oeg.librairy.api.facade.model.avro.DataFields;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
+import es.upm.oeg.librairy.api.model.Document;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -11,7 +12,6 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.CursorMarkParams;
-import es.upm.oeg.librairy.api.model.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,4 +145,5 @@ public class SolrReader implements Reader {
     public void offset(Integer numLines) {
         this.index = new AtomicInteger(numLines);
     }
+
 }

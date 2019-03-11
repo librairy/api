@@ -1,8 +1,8 @@
 package es.upm.oeg.librairy.api.controllers;
 
 import es.upm.oeg.librairy.api.facade.model.avro.LibrairyApi;
-import es.upm.oeg.librairy.api.facade.model.rest.Set;
-import es.upm.oeg.librairy.api.facade.model.rest.SetRequest;
+import es.upm.oeg.librairy.api.facade.model.rest.Item;
+import es.upm.oeg.librairy.api.facade.model.rest.ItemsRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -19,13 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/sets")
-@Api(tags="/sets", description = "group of documents")
-public class SetServiceController {
+@RequestMapping("/items")
+@Api(tags="/items", description = "document suggestions")
+public class ItemsServiceController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SetServiceController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ItemsServiceController.class);
 
     @Autowired
     LibrairyApi service;
@@ -41,21 +43,21 @@ public class SetServiceController {
     }
 
 
-    @ApiOperation(value = "group documents", nickname = "postSet", response=String.class)
+    @ApiOperation(value = "document suggestions", nickname = "postItems", response=Item.class, responseContainer = "list")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Accepted", response = String.class),
+            @ApiResponse(code = 200, message = "Ok", response = Item.class, responseContainer = "list"),
     })
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Set> create(@RequestBody SetRequest request)  {
+    public ResponseEntity<List<Item>> create(@RequestBody ItemsRequest request)  {
         try {
-            if (!request.isValid()) return new ResponseEntity<Set>(HttpStatus.BAD_REQUEST);
+            if (!request.isValid()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-            es.upm.oeg.librairy.api.facade.model.avro.Set set = service.getSet(request);
+            List<es.upm.oeg.librairy.api.facade.model.avro.Item> items = service.createItems(request);
 
-            return new ResponseEntity(new Set(set), HttpStatus.ACCEPTED);
+            return new ResponseEntity(items.stream().map(i -> new Item(i)).collect(Collectors.toList()), HttpStatus.OK);
         } catch (Exception e) {
-            LOG.error("IO Error", e);
-            return new ResponseEntity<Set>(HttpStatus.INTERNAL_SERVER_ERROR);
+            LOG.error("Unexpected Error", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
