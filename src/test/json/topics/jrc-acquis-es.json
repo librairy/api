@@ -2,7 +2,7 @@
   "name": "jrc-acquis-ES-model",
   "description": "Collection of legislative texts (ES) from the European Union generated between years 1958 and 2006",
   "contactEmail": "cbadenes@fi.upm.es",
-  "version": "1.0",
+  "version": "1.1",
   "annotate":false,
   "parameters": {
     "maxdocratio": "0.9",
@@ -14,7 +14,7 @@
     "beta":"0.01",
     "language": "es",
     "iterations":"1000",
-    "stopwords":"tel. dlar andr xxx ofr iii thar zur tehty luxembourg luxemburg hce parcom bruxelles brussel maj food viii"
+    "stopwords":""
   },
   "dataSource": {
     "cache": false,

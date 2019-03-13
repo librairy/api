@@ -2,7 +2,7 @@
   "name": "jrc-acquis-EN-model",
   "description": "Collection of legislative texts (EN) from the European Union generated between years 1958 and 2006",
   "contactEmail": "cbadenes@fi.upm.es",
-  "version": "1.0",
+  "version": "1.1",
   "annotate":false,
   "parameters": {
     "maxdocratio": "0.9",
@@ -14,7 +14,7 @@
     "beta":"0.01",
     "language": "en",
     "iterations":"1000",
-    "stopwords":"parliament republic eea union market joint animal proposal common financial country aid state service e.on mrs esf"
+    "stopwords":""
   },
   "dataSource": {
     "cache": false,
