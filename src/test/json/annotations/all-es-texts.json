@@ -11,11 +11,11 @@
         "txt_t", "name_s"
       ]
     },
-    "filter": "txt_t:[* TO *] && lang_s:en",
+    "filter": "txt_t:[* TO *] && lang_s:es",
     "format": "SOLR_CORE",
     "offset": 0,
     "size": -1,
     "url": "http://librairy.linkeddata.es/solr/documents"
   },
-  "modelEndpoint": "http://librairy.linkeddata.es/jrc-en-model"
+  "modelEndpoint": "http://librairy.linkeddata.es/jrc-es-model"
 }

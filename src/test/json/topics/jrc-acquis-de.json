@@ -1,6 +1,6 @@
 {
-  "name": "jrc-acquis-ES-model",
-  "description": "Collection of legislative texts (ES) from the European Union generated between years 1958 and 2006",
+  "name": "jrc-acquis-DE-model",
+  "description": "Collection of legislative texts (DE) from the European Union generated between years 1958 and 2006",
   "contactEmail": "cbadenes@fi.upm.es",
   "version": "1.0",
   "annotate":false,
@@ -12,9 +12,9 @@
     "seed":"1066",
     "alpha": "0.1",
     "beta":"0.01",
-    "language": "es",
+    "language": "de",
     "iterations":"1000",
-    "stopwords":"tel. dlar andr xxx ofr iii thar zur tehty luxembourg luxemburg hce parcom bruxelles brussel maj food viii"
+    "stopwords":""
   },
   "dataSource": {
     "cache": false,
@@ -27,7 +27,7 @@
         "name_s", "txt_t"
       ]
     },
-    "filter":"size_i:[100 TO 10000] && source_s:jrc && lang_s:es && labels_t:[* TO *]",
+    "filter":"size_i:[100 TO 10000] && source_s:jrc && lang_s:de && labels_t:[* TO *]",
     "format": "SOLR_CORE",
     "offset": 0,
     "size": -1,

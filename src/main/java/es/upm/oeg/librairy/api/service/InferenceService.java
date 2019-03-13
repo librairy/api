@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.librairy.service.modeler.facade.rest.model.ClassRequest;
 import org.librairy.service.modeler.facade.rest.model.InferenceRequest;
+import org.librairy.service.modeler.facade.rest.model.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -100,6 +101,29 @@ public class InferenceService {
         }
 
         return topicDist;
+    }
+
+    public Topic getTopic(String model, Integer index) throws UnirestException {
+
+        HttpResponse<JsonNode> response = Unirest
+                .get(model + "/topics/" + index)
+                .asJson();
+
+        Topic topic = new Topic();
+
+        if (response.getStatus() != 200) {
+            LOG.warn("Error on request: " + response);
+            return topic;
+        }
+
+        JSONObject json = response.getBody().getObject();
+
+        topic.setId(index);
+        topic.setName(json.getString("name"));
+        topic.setEntropy(json.getDouble("entropy"));
+        topic.setDescription(json.getString("description"));
+
+        return topic;
 
     }
 

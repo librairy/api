@@ -94,7 +94,7 @@ public class CorpusBuilder {
             updateLanguage(document.getText());
             // bow from nlp-service
             String content = StringReader.hardFormat(document.getText());
-            String text = raw? content : BoWService.toText(librairyNlpClient.bow( content, language, Arrays.asList(PoS.NOUN, PoS.VERB, PoS.ADJECTIVE), multigrams));
+            String text = raw? content : BoWService.toText(librairyNlpClient.bow( content, language, Arrays.asList(PoS.NOUN, PoS.VERB, PoS.PROPER_NOUN, PoS.ADJECTIVE), multigrams));
             row.append(text);
             updated = DateBuilder.now();
             write(row.toString());

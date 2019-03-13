@@ -15,12 +15,17 @@ public class WriterUtils {
     private static final Logger LOG = LoggerFactory.getLogger(WriterUtils.class);
 
     public static BufferedWriter to(String path) throws IOException {
+        return to(path, true);
+    }
+
+    public static BufferedWriter to(String path, Boolean gzip) throws IOException {
         File out = new File(path);
         if (out.exists()) out.delete();
         else {
             out.getParentFile().mkdirs();
         }
-        return new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(path))));
+        return gzip? new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(path)))) : new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path)));
+
     }
 
 }
