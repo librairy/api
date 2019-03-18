@@ -11,6 +11,7 @@ import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.util.NamedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,23 +85,7 @@ public class SolrSearcher implements Searcher {
 
             SolrDocumentList results = rsp.getResults();
 
-            List<QueryDocument> queryDocuments = new ArrayList<>();
-
-            for (SolrDocument result : results){
-                QueryDocument queryDocument = new QueryDocument();
-                queryDocument.setId((String)result.getFieldValue("id"));
-                queryDocument.setScore(((Float)result.getFieldValue("score")).doubleValue());
-                Map<String,Object> data = new HashMap<>();
-                if (fields.isPresent()){
-                    for(String field : fields.get()){
-                        data.put(field, result.getFieldValue(field));
-                    }
-                }
-                queryDocument.setData(data);
-                queryDocuments.add(queryDocument);
-            }
-
-            return queryDocuments;
+            return toQueryDocuments(results, fields);
         } catch (SolrServerException e) {
             LOG.error("Error reading solr core",e);
             return Collections.emptyList();
@@ -132,5 +117,71 @@ public class SolrSearcher implements Searcher {
         }
 
         return combinedMap;
+    }
+
+    @Override
+    public List<QueryDocument> getMoreLikeThis(String id, String queryField, String filterQuery, Optional<List<String>> fields, Integer max) {
+
+        try {
+            SolrQuery refQuery = new SolrQuery();
+            refQuery.setRows(max);
+            refQuery.addField("id");
+            refQuery.addField("score");
+            if (fields.isPresent()){
+                fields.get().forEach(f -> refQuery.addField(f));
+            }
+            String query = "id:"+id;
+            refQuery.setQuery(query);
+
+            if (!Strings.isNullOrEmpty(filterQuery)) refQuery.addFilterQuery(filterQuery);
+
+            refQuery.set("mlt",true);
+            refQuery.set("mlt.fl",queryField);
+            refQuery.set("mlt.mindf",1);
+            refQuery.set("mlt.mintf",1);
+            refQuery.set("mlt.minwl",1);
+            refQuery.set("mlt.boost",false);
+            refQuery.set("mlt.count",max);
+
+
+            QueryResponse rsp = solrClient.query(refQuery);
+
+            if (rsp.getResults().isEmpty()){
+                LOG.info("No found documents by query: " + query + " and filter: " + filterQuery);
+                return Collections.emptyList();
+            }
+
+            NamedList<SolrDocumentList> results = rsp.getMoreLikeThis();
+
+            SolrDocumentList resultList = results.get(id);
+            return toQueryDocuments(resultList, fields);
+        } catch (SolrServerException e) {
+            LOG.error("Error reading solr core",e);
+            return Collections.emptyList();
+        } catch (IOException e) {
+            LOG.error("Error connecting to solr server",e);
+            return Collections.emptyList();
+        }
+
+    }
+
+    private List<QueryDocument> toQueryDocuments(SolrDocumentList solrDocumentList, Optional<List<String>> fields){
+        List<QueryDocument> queryDocuments = new ArrayList<>();
+
+        for (SolrDocument result : solrDocumentList){
+            QueryDocument queryDocument = new QueryDocument();
+            queryDocument.setId((String)result.getFieldValue("id"));
+            queryDocument.setScore(((Float)result.getFieldValue("score")).doubleValue());
+            Map<String,Object> data = new HashMap<>();
+            if (fields.isPresent()){
+                for(String field : fields.get()){
+                    data.put(field, result.getFieldValue(field));
+                }
+            }
+            queryDocument.setData(data);
+            queryDocuments.add(queryDocument);
+        }
+
+        return queryDocuments;
     }
 }

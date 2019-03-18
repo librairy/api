@@ -1,20 +1,16 @@
 package es.upm.oeg.librairy.api.io.writer;
 
-import com.google.common.base.Strings;
-import es.upm.oeg.librairy.api.facade.model.avro.DataFields;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSink;
-import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
-import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
-import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -54,7 +50,7 @@ public class SolrWriter implements Writer {
 
             solrClient.add(sd);
 
-            LOG.info("[" + counter.incrementAndGet() + "] Document '" + id + "' saved");
+            LOG.debug("[" + counter.incrementAndGet() + "] Document '" + id + "' updated");
 
             if (counter.get() % 100 == 0){
                 LOG.info("Committing partial annotations["+ this.counter.get() +"]");
@@ -108,6 +104,17 @@ public class SolrWriter implements Writer {
             LOG.error("Unexpected error closing collection", e);
         }
         return commited;
+    }
+
+    @Override
+    public Boolean reset() {
+        try {
+            solrClient.deleteByQuery("*:*");
+            return true;
+        } catch (Exception e) {
+            LOG.error("Unexpected error deleting index",e);
+            return false;
+        }
     }
 
     @Override

@@ -2,7 +2,7 @@
   "name": "jrc-acquis-FR-model",
   "description": "Collection of legislative texts (FR) from the European Union generated between years 1958 and 2006",
   "contactEmail": "cbadenes@fi.upm.es",
-  "version": "1.1",
+  "version": "1.2",
   "annotate":false,
   "parameters": {
     "maxdocratio": "0.9",
@@ -14,23 +14,24 @@
     "beta":"0.01",
     "language": "fr",
     "iterations":"1000",
-    "stopwords":""
+    "topwords":"20",
+    "stopwords":"Annexe application article autorité Commission Comité commune Conseil Cour directive commerce eec EEA partie Parlement point production proposition protocole disposition quantité taux remplacer République service États système traité Union navire marchandises information licence conjointe lay marketing"
   },
   "dataSource": {
     "cache": false,
     "dataFields": {
       "id": "id",
       "labels": [
-        "labels_t"
+        "concepts_t"
       ],
       "text": [
         "name_s", "txt_t"
       ]
     },
-    "filter":"size_i:[100 TO 10000] && source_s:jrc && lang_s:fr && labels_t:[* TO *]",
+    "filter":"size_i:[100 TO *] && source_s:jrc && lang_s:fr && concepts_t:[* TO *]",
     "format": "SOLR_CORE",
     "offset": 0,
-    "size": -1,
+    "size": 10000,
     "url": "http://librairy.linkeddata.es/solr/documents"
   }
 }

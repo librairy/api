@@ -82,6 +82,7 @@ public class LDALauncher {
 
                     pipe = report.getPipe();
 
+
                     Map<Integer, List<TopicWord>> topWords = topicsService.getTopWords(model, parameters.getNumTopWords());
 
                     Map<String,List<String>> topics = new HashMap<>();
@@ -99,6 +100,7 @@ public class LDALauncher {
 
                     if (stoplabelCandidateList.isEmpty()){
 
+                        // TODO fix infinite loop
                         List<String> stopWordCandidateList = stopwordService.detect(topics);
 
                         if (stopWordCandidateList.isEmpty()) break;

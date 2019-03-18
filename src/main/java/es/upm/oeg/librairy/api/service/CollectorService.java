@@ -13,9 +13,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
@@ -32,7 +37,10 @@ public class CollectorService {
     public boolean collect(CorpusBuilder corpusBuilder, TopicsRequest request) {
 
         try{
-            Boolean multigrams = request.getParameters() != null && request.getParameters().containsKey("multigrams")? Boolean.valueOf(request.getParameters().get("multigrams")) : false;
+            Boolean multigrams  = request.getParameters() != null && request.getParameters().containsKey("multigrams")? Boolean.valueOf(request.getParameters().get("multigrams")) : false;
+
+            Boolean lowerCase   = request.getParameters() != null && request.getParameters().containsKey("lowercase")? Boolean.valueOf(request.getParameters().get("lowercase")) : false;
+
 
             DataSource datasource = request.getDataSource();
 
@@ -45,6 +53,8 @@ public class CollectorService {
             Integer interval = maxSize > 0? maxSize > 100? maxSize.intValue()/100 : 1 : 100;
             Optional<Document> doc;
             reader.offset(datasource.getOffset().intValue());
+            final Boolean raw = request.getParameters().containsKey("raw")? Boolean.valueOf(request.getParameters().get("raw")) : false;
+            final Map<String,Long> stopwords = request.getParameters().containsKey("stopwords")? Arrays.stream(request.getParameters().get("stopwords").split(" ")).collect(Collectors.groupingBy(Function.identity(), Collectors.counting())) : new HashMap<>();
             ParallelExecutor parallelExecutor = new ParallelExecutor();
             while(( maxSize<0 || counter.get()<maxSize) &&  (doc = reader.next()).isPresent()){
                 final Document document = doc.get();
@@ -52,7 +62,8 @@ public class CollectorService {
                 if (counter.incrementAndGet() % interval == 0) LOG.info(counter.get() + " documents indexed");
                 parallelExecutor.submit(() -> {
                     try {
-                        corpusBuilder.add(document, multigrams, false);
+
+                        corpusBuilder.add(document, multigrams, raw, lowerCase, stopwords);
                     } catch (Exception e) {
                         LOG.error("Unexpected error adding new document to corpus",e);
                     }

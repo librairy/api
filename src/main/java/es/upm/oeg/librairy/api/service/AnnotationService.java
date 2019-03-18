@@ -1,6 +1,7 @@
 package es.upm.oeg.librairy.api.service;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 import es.upm.oeg.librairy.api.builders.HashTopicBuilder;
 import es.upm.oeg.librairy.api.executors.ParallelExecutor;
 import es.upm.oeg.librairy.api.facade.model.avro.AnnotationsRequest;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
@@ -64,7 +66,15 @@ public class AnnotationService {
 
                         Map<String,Object> data = HashTopicBuilder.from(topicsMap);
 
-                        writer.update(id, data);
+                        if (document.getLabels() != null && !document.getLabels().isEmpty()){
+                            data.put("labels_t",document.getLabels().stream().collect(Collectors.joining(" ")));
+                        }
+
+                        if (!Strings.isNullOrEmpty(document.getName())){
+                            data.put("name_s",document.getName());
+                        }
+
+                        writer.update(id,data);
                     } catch (Exception e) {
                         LOG.error("Unexpected error adding new document to corpus",e);
                     }

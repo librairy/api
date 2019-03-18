@@ -64,7 +64,7 @@ public class ApiService implements LibrairyApi{
     @Override
     public List<Item> createItems(ItemsRequest setRequest) throws AvroRemoteException {
         try {
-            return setService.create(setRequest);
+            return setService.getItemsByHash(setRequest);
         } catch (IOException e) {
             throw new AvroRemoteException(e);
         } catch (UnirestException e) {

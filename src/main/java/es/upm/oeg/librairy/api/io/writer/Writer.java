@@ -13,6 +13,8 @@ public interface Writer {
 
     Boolean close();
 
+    Boolean reset();
+
     void offset(Integer numLines);
 
 }

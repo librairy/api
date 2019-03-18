@@ -1,6 +1,7 @@
 package cc.mallet.topics;
 
 import cc.mallet.pipe.Pipe;
+import cc.mallet.pipe.SerialPipes;
 import cc.mallet.types.*;
 import es.upm.oeg.librairy.api.builders.InstanceBuilder;
 import es.upm.oeg.librairy.api.builders.MailBuilder;
@@ -99,6 +100,7 @@ public class LabeledLDALauncher {
 
                 if (stoplabelCandidateList.isEmpty()){
 
+//                     TODO fix infinite loop
                     List<String> stopWordCandidateList = stopwordService.detect(topics);
 
                     if (stopWordCandidateList.isEmpty()) break;
@@ -140,17 +142,17 @@ public class LabeledLDALauncher {
 
     public TopicReport build(ModelParams parameters) throws IOException {
 
-        Double alpha        = parameters.getAlpha();
-        Double beta         = parameters.getBeta();
-        Integer numTopWords = parameters.getNumTopWords();
-        Integer numIterations = parameters.getNumIterations();
-        String pos          = parameters.getPos();
-        Integer maxRetries  = parameters.getNumRetries();
-        Boolean raw         = parameters.getRaw();
-        Integer seed        = parameters.getSeed();
-        Integer corpusSize  = parameters.getSize();
+        Double alpha            = parameters.getAlpha();
+        Double beta             = parameters.getBeta();
+        Integer numTopWords     = parameters.getNumTopWords();
+        Integer numIterations   = parameters.getNumIterations();
+        String pos              = parameters.getPos();
+        Integer maxRetries      = parameters.getNumRetries();
+        Boolean raw             = parameters.getRaw();
+        Integer seed            = parameters.getSeed();
+        Integer corpusSize      = parameters.getSize();
 
-        LabeledLDA labeledLDA = new LabeledLDA(alpha, beta);
+        LabeledLDA labeledLDA   = new LabeledLDA(alpha, beta);
 
         labeledLDA.setRandomSeed(seed);
 
@@ -218,7 +220,6 @@ public class LabeledLDALauncher {
         LOG.info("logLikelihood = " + loglikelihood);
 
 
-
         ParallelTopicModel parallelModel = new ParallelTopicModel(labeledLDA.topicAlphabet, labeledLDA.alpha * labeledLDA.numTopics, labeledLDA.beta);
         parallelModel.data                              = labeledLDA.data;
         parallelModel.alphabet                          = labeledLDA.alphabet;
@@ -243,7 +244,6 @@ public class LabeledLDALauncher {
         parallelModel.topicAlphabet = labelAlphabet;
 
         parallelModel.buildInitialTypeTopicCounts();
-
 
         return new TopicReport(parallelModel, instances.getPipe());
     }

@@ -1,20 +1,8 @@
 package es.upm.oeg.librairy.api.builders;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
-import com.optimaize.langdetect.LanguageDetector;
-import com.optimaize.langdetect.LanguageDetectorBuilder;
-import com.optimaize.langdetect.i18n.LdLocale;
-import com.optimaize.langdetect.ngram.NgramExtractors;
-import com.optimaize.langdetect.profiles.BuiltInLanguages;
-import com.optimaize.langdetect.profiles.LanguageProfile;
-import com.optimaize.langdetect.profiles.LanguageProfileReader;
-import com.optimaize.langdetect.text.CommonTextObjectFactories;
-import com.optimaize.langdetect.text.TextObject;
-import com.optimaize.langdetect.text.TextObjectFactory;
-import es.upm.oeg.librairy.api.io.reader.*;
 import es.upm.oeg.librairy.api.io.reader.StringReader;
 import es.upm.oeg.librairy.api.model.Document;
 import es.upm.oeg.librairy.api.service.LanguageService;
@@ -26,7 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
@@ -78,7 +67,7 @@ public class CorpusBuilder {
         return counter.get();
     }
 
-    public void add(Document document, Boolean multigrams, Boolean raw) throws IOException {
+    public void add(Document document, Boolean multigrams, Boolean raw, Boolean lowercase, Map<String,Long> stopwords) throws IOException {
         if (Strings.isNullOrEmpty(document.getText()) || Strings.isNullOrEmpty(document.getText().replace("\n","").trim())) {
             LOG.warn("Document is empty: " + document.getId());
             return;
@@ -93,18 +82,19 @@ public class CorpusBuilder {
             row.append(labels).append(SEPARATOR);
             updateLanguage(document.getText());
             // bow from nlp-service
-            String content = StringReader.hardFormat(document.getText());
-            String text = raw? content : BoWService.toText(librairyNlpClient.bow( content, language, Arrays.asList(PoS.NOUN, PoS.VERB, PoS.PROPER_NOUN, PoS.ADJECTIVE), multigrams));
+            String docText = lowercase ? document.getText().toLowerCase() : document.getText();
+            String content = StringReader.hardFormat(docText);
+            String text = raw? content : BoWService.toText(librairyNlpClient.bow( content, language, Arrays.asList(PoS.NOUN, PoS.VERB, PoS.PROPER_NOUN, PoS.ADJECTIVE), multigrams).stream().filter(g -> !stopwords.containsKey(g.getToken())).collect(Collectors.toList()));
             row.append(text);
             updated = DateBuilder.now();
-            write(row.toString());
-            LOG.info("Added document: [" + document.getId() +"] to corpus");
+            int count = write(row.toString());
+            LOG.info("Added document: [" + count + "] - '" +document.getId() +"' to corpus");
         }finally{
             pendingDocs.decrementAndGet();
         }
     }
 
-    private synchronized void write(String text) {
+    private synchronized int write(String text) {
         try {
             if (isClosed) {
                 writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(filePath.toFile(), true))));
@@ -112,12 +102,13 @@ public class CorpusBuilder {
             }
             writer.write(text);
             writer.newLine();
-            counter.incrementAndGet();
+            return counter.incrementAndGet();
         } catch (IOException e) {
             LOG.warn("Error writing on file: " + e.getMessage());
         } catch (Exception e) {
             LOG.error("Unexpected Error writing on file: " + e.getMessage(), e);
         }
+        return counter.get();
     }
 
 

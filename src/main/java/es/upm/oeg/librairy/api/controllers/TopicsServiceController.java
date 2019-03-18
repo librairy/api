@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/topics")
@@ -53,6 +54,9 @@ public class TopicsServiceController {
         String date = DateBuilder.now();
         try {
             if (!request.isValid()) return new ResponseEntity(new es.upm.oeg.librairy.api.facade.model.rest.Task(date, "REJECTED", "Bad Request"),HttpStatus.BAD_REQUEST);
+
+            if (request.get("parameters") == null) request.setParameters(new HashMap<>());
+
             service.createTopics(request);
 
             return new ResponseEntity(new es.upm.oeg.librairy.api.facade.model.rest.Task(date,"QUEUED","Task created"), HttpStatus.ACCEPTED);

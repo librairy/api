@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -30,9 +33,9 @@ public class ItemService {
     InferenceService inferenceService;
 
 
-    public List<Item> create(ItemsRequest request) throws IOException, UnirestException {
+    public List<Item> getItemsByHash(ItemsRequest request) throws IOException, UnirestException {
 
-        LOG.info("Ready to create sets from: " + request);
+        LOG.debug("Ready to create sets from: " + request);
 
         DataSource dataSource   = request.getDataSource();
 
@@ -79,6 +82,37 @@ public class ItemService {
 
 
 
+
+        return items;
+
+    }
+
+    public List<Item> getItemsByLabels(ItemsRequest request) throws IOException, UnirestException {
+
+        LOG.debug("Ready to create sets from: " + request);
+
+        DataSource dataSource   = request.getDataSource();
+
+        Searcher searcher       = SearcherFactory.newFrom(dataSource);
+
+        if (request.getReference().getDocument() == null || Strings.isNullOrEmpty(request.getReference().getDocument().getId())) throw new RuntimeException("Document ID is empty");
+
+        Reference reference     = request.getReference();
+
+        String id = reference.getDocument().getId();
+
+        String idField      = dataSource.getDataFields().getId();
+        String nameField    = dataSource.getDataFields().getName();
+
+
+        List<QueryDocument> simDocs = searcher.getMoreLikeThis(
+                id,
+                "labels_t",
+                dataSource.getFilter(),
+                Optional.of(Arrays.asList(nameField)),
+                request.getSize());
+
+        List<Item> items = simDocs.stream().map(qd -> Item.newBuilder().setId(qd.getId()).setName(String.valueOf(qd.getData().get(nameField))).setScore(qd.getScore()).build()).collect(Collectors.toList());
 
         return items;
 
