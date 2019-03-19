@@ -37,12 +37,12 @@ public class EvaluationIntTest {
                 .setFilter("source_s:jrc && lang_s:en && labels_t:[* TO *]")
                 .setDataFields(DataFields.newBuilder()
                         .setId("id")
-                        .setLabels(Arrays.asList("extlabels_t"))
+                        .setLabels(Arrays.asList("root-labels_t"))
                         .setName("name_s")
-                        .setText(Arrays.asList("name_s","txt_t"))
+                        .setText(Arrays.asList("txt_t"))
                         .build())
                 .setOffset(0)
-                .setSize(1000)
+                .setSize(100)
                 .setUrl("http://librairy.linkeddata.es/solr/jrc")
                 .build()
                 ;
@@ -51,7 +51,8 @@ public class EvaluationIntTest {
                 .setUrl("http://librairy.linkeddata.es/solr/test1")
                 .build();
 
-        String model = "http://librairy.linkeddata.es/jrc-en-model";
+        //String model = "http://librairy.linkeddata.es/jrc-en-model";
+        String model = "http://localhost:8080";
 
         Integer refSize = 50;
 

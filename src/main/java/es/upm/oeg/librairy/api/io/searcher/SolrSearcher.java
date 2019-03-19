@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -55,8 +56,8 @@ public class SolrSearcher implements Searcher {
     @Override
     public List<QueryDocument> getBy(Map<String, Object> queryParams, String filterQuery, Optional<List<String>> fields, Integer max, Boolean combine) {
 
+        SolrQuery refQuery = new SolrQuery();
         try {
-            SolrQuery refQuery = new SolrQuery();
             refQuery.setRows(max);
             refQuery.addField("id");
             refQuery.addField("score");
@@ -65,6 +66,9 @@ public class SolrSearcher implements Searcher {
             }
 
             String query = "*:*";
+
+            // purge query params
+
 
 
             if (!queryParams.isEmpty()){
@@ -91,6 +95,9 @@ public class SolrSearcher implements Searcher {
             return Collections.emptyList();
         } catch (IOException e) {
             LOG.error("Error connecting to solr server",e);
+            return Collections.emptyList();
+        } catch (Exception e){
+            LOG.error("Unexpected query error",e);
             return Collections.emptyList();
         }
 

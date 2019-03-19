@@ -76,7 +76,7 @@ public class ItemService {
                 dataSource.getFilter(),
                 Optional.of(Arrays.asList(nameField)),
                 request.getSize(),
-                true);
+                false);
 
         List<Item> items = simDocs.stream().map(qd -> Item.newBuilder().setId(qd.getId()).setName(String.valueOf(qd.getData().get(nameField))).setScore(qd.getScore()).build()).collect(Collectors.toList());
 

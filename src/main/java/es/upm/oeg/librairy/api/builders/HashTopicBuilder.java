@@ -17,6 +17,9 @@ public class HashTopicBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(HashTopicBuilder.class);
 
+    private static final Integer MAX_HASH_LEVELS = 2;
+
+    private static final Integer MAX_TOPICS_PER_LEVEL   = 10;
 
     public static List<String> fields(){
         return Arrays.asList("topics0_t","topics1_t","topics2_t");
@@ -24,12 +27,18 @@ public class HashTopicBuilder {
 
     public static Map<String, Object> from(Map<Integer,List<String>> topicsMap){
         Map<String,Object> data = new HashMap<String, Object>();
-        for(Map.Entry<Integer,List<String>> hashLevel : topicsMap.entrySet()){
-            String fieldName = "topics"+hashLevel.getKey()+"_t";
-            String td        = hashLevel.getValue().stream().collect(Collectors.joining(" "));
+        //for(Map.Entry<Integer,List<String>> hashLevel : topicsMap.entrySet()){
+        for (int i = 0; i< MAX_HASH_LEVELS; i++){
+            if (!isValid(i,topicsMap.get(i).size())) continue;
+            String fieldName = "topics"+i+"_t";
+            String td        = topicsMap.get(i).stream().collect(Collectors.joining(" "));
             data.put(fieldName, td);
         }
         return data;
+    }
+
+    private static boolean isValid(Integer hierarchyLevel, Integer numTopics){
+        return hierarchyLevel< MAX_HASH_LEVELS && numTopics<=MAX_TOPICS_PER_LEVEL;
     }
 
 

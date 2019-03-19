@@ -50,6 +50,17 @@ public class EvaluationService {
 
             Writer writer       = WriterFactory.newFrom(dataSink);
 
+            // Annotate
+            writer.reset();
+            AnnotationsRequest annotationRequest = AnnotationsRequest.newBuilder()
+                    .setDataSource(dataSource)
+                    .setDataSink(dataSink)
+                    .setModelEndpoint(model)
+                    .setContactEmail("internal@mail.com")
+                    .build();
+            annotationService.create(annotationRequest);
+
+            // Evaluate
             DataSource outputSource = DataSource.newBuilder()
                     .setCache(false)
                     .setCredentials(dataSink.getCredentials())
@@ -67,27 +78,16 @@ public class EvaluationService {
                     .setUrl(dataSink.getUrl())
                     .build();
 
-            // Annotate
-            writer.reset();
-            AnnotationsRequest annotationRequest = AnnotationsRequest.newBuilder()
-                    .setDataSource(dataSource)
-                    .setDataSink(dataSink)
-                    .setModelEndpoint(model)
-                    .setContactEmail("internal@mail.com")
-                    .build();
-            annotationService.create(annotationRequest);
-
-
             Reader reader       = ReaderFactory.newFrom(outputSource);
 
             Map<String,Evaluation> results = new ConcurrentHashMap<>();
 
             // Create Evaluations
-            Long maxSize = dataSource.getSize();
+            Long maxSize = outputSource.getSize();
             AtomicInteger counter = new AtomicInteger();
             Integer interval = maxSize > 0? maxSize > 100? maxSize.intValue()/100 : 1 : 100;
             Optional<Document> doc;
-            reader.offset(dataSource.getOffset().intValue());
+            reader.offset(outputSource.getOffset().intValue());
             ParallelExecutor parallelExecutor = new ParallelExecutor();
             while(( maxSize<0 || counter.get()<maxSize) &&  (doc = reader.next()).isPresent()){
                 final Document document = doc.get();

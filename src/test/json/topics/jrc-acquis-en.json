@@ -1,8 +1,8 @@
 {
-  "name": "jrc-acquis-EN-model",
+  "name": "jrc-en-model",
   "description": "Collection of legislative texts (EN) from the European Union generated between years 1958 and 2006",
   "contactEmail": "cbadenes@fi.upm.es",
-  "version": "1.3",
+  "version": "1.0",
   "annotate":false,
   "parameters": {
     "maxdocratio": "0.9",
@@ -15,8 +15,8 @@
     "language": "en",
     "iterations":"1000",
     "lowercase":true,
-    "topwords":"20",
-    "stopwords":"annex application article authority commission community committee common council court directive duty eea eec european goods information joint lay licence member parliament part proposal protocol quantity rate replace republic service states system trade treaty union vessel",
+    "topwords":"10",
+    "stopwords":"",
     "stoplabels":""
   },
   "dataSource": {
@@ -24,16 +24,16 @@
     "dataFields": {
       "id": "id",
       "labels": [
-        "concepts_t"
+        "root-labels_t"
       ],
       "text": [
-        "name_s", "txt_t"
+        "txt_t"
       ]
     },
-    "filter":"size_i:[100 TO *] && source_s:jrc && lang_s:en && concepts_t:[* TO *]",
+    "filter":"size_i:[100 TO *] && source_s:jrc && lang_s:en && root-labels_t:[* TO *]",
     "format": "SOLR_CORE",
     "offset": 0,
-    "size": 10000,
+    "size": 14000,
     "url": "http://librairy.linkeddata.es/solr/jrc"
   }
 }

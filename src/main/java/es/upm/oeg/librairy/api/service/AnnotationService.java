@@ -60,7 +60,7 @@ public class AnnotationService {
                 parallelExecutor.submit(() -> {
                     try {
                         String id   = document.getId();
-                        String txt  = document.getText();
+                        String txt  = document.getText().toLowerCase();
 
                         Map<Integer, List<String>> topicsMap = inferenceService.getTopicsByRelevance(txt, annotationRequest.getModelEndpoint());
 

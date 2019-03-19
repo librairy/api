@@ -63,6 +63,8 @@ public class ModelService {
             if (parameters.containsKey("entities"))     ldaParameters.setEntities(Boolean.valueOf(parameters.get("entities")));
             if (parameters.containsKey("seed"))         ldaParameters.setSeed(Integer.valueOf(parameters.get("seed")));
             if (parameters.containsKey("stoplabels"))   ldaParameters.setStoplabels(Arrays.asList(parameters.get("stoplabels").split(" ")));
+            if (parameters.containsKey("lowercase"))    ldaParameters.setLowercase(Boolean.valueOf(parameters.get("lowercase").toUpperCase()));
+
 
             ldaParameters.setSize(corpus.getNumDocs());
 
