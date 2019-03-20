@@ -79,6 +79,14 @@ public class CSVReader extends FileReader{
 
                 document.setLabels(Arrays.asList(labels.toString().split(labelSeparator)));
             }
+            if (map.containsKey("extra")){
+                Map<String,String> extraData = new HashMap<>();
+                for(Integer i : map.get("extra")){
+                    extraData.put(String.valueOf(i), StringReader.softFormat(values[i]) );
+                }
+                document.setExtraData(extraData);
+            }
+
             document.setFormat("csv");
 
             return Optional.of(document);

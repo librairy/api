@@ -16,10 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -41,12 +38,15 @@ public class SolrReader implements Reader {
     private final List<String> txtFields;
     private final List<String> labelsFields;
     private final Long maxSize;
+    private final List<String> extraFields;
 
     private String nextCursorMark;
     private SolrQuery solrQuery;
     private String cursorMark;
     private SolrDocumentList solrDocList;
     private AtomicInteger index;
+    private Integer counter;
+    private Integer offset = 0;
 
 
     public SolrReader(DataSource dataSource) throws IOException {
@@ -57,6 +57,7 @@ public class SolrReader implements Reader {
         this.nameField      = Strings.isNullOrEmpty(fields.getName())? null : fields.getName();
         this.txtFields      = fields.getText();
         this.labelsFields   = (fields.getLabels() != null)? fields.getLabels() : Collections.emptyList();
+        this.extraFields    = (fields.getExtra() != null)? fields.getExtra() : Collections.emptyList();
         this.maxSize        = dataSource.getSize();
 
         this.filter         = Strings.isNullOrEmpty(dataSource.getFilter())? "*:*" : dataSource.getFilter();
@@ -64,7 +65,7 @@ public class SolrReader implements Reader {
         this.collection     = StringUtils.substringAfterLast(dataSource.getUrl(),"/");
 
         this.solrClient     = new HttpSolrClient.Builder(endpoint).build();
-
+        this.counter        = 0;
 
         this.solrQuery = new SolrQuery();
         solrQuery.setRows(window);
@@ -72,6 +73,7 @@ public class SolrReader implements Reader {
         if (!Strings.isNullOrEmpty(nameField)) solrQuery.addField(nameField);
         txtFields.forEach(f -> solrQuery.addField(f));
         labelsFields.forEach(f -> solrQuery.addField(f));
+        extraFields.forEach(f -> solrQuery.addField(f));
         solrQuery.setQuery(filter);
         solrQuery.addSort(idField, SolrQuery.ORDER.asc);
         this.nextCursorMark = CursorMarkParams.CURSOR_MARK_START;
@@ -87,6 +89,7 @@ public class SolrReader implements Reader {
             this.nextCursorMark = rsp.getNextCursorMark();
             this.solrDocList = rsp.getResults();
             this.index = new AtomicInteger();
+            this.counter += solrDocList.size();
         }catch (Exception e){
             throw new IOException(e);
         }
@@ -95,6 +98,14 @@ public class SolrReader implements Reader {
     @Override
     public Optional<Document> next() {
         try{
+            if (this.offset > this.counter){
+                int times = this.offset / this.counter;
+                LOG.info("passing " + times + " pages...");
+                for(int i=0;i<times;i++){
+                    query();
+                }
+            }
+
             if (index.get() >= solrDocList.size()) {
                 if (index.get() < window){
                     return Optional.empty();
@@ -132,6 +143,12 @@ public class SolrReader implements Reader {
                 document.setLabels(Arrays.asList(labels.toString().split(" ")));
             }
 
+            if (!extraFields.isEmpty()){
+                Map<String,String> extraData = new HashMap<>();
+                extraFields.stream().filter(tf -> solrDoc.containsKey(tf)).forEach(tf -> extraData.put(tf, StringReader.softFormat(solrDoc.getFieldValue(tf).toString())));
+                document.setExtraData(extraData);
+            }
+
             return Optional.of(document);
         }catch (Exception e){
             LOG.error("Unexpected error on iterated list of solr docs",e);
@@ -143,7 +160,7 @@ public class SolrReader implements Reader {
 
     @Override
     public void offset(Integer numLines) {
-        this.index = new AtomicInteger(numLines);
+        this.offset = numLines;
     }
 
 }

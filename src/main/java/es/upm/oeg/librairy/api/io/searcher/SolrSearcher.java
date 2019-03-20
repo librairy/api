@@ -112,7 +112,9 @@ public class SolrSearcher implements Searcher {
         for(int i=0;i<sortIds.size();i++){
             String key = sortIds.get(i);
             int boost = params.size();
-            for(String t : params.get(sortIds.get(i)).toString().split(" ")){
+            Object param = params.get(sortIds.get(i));
+            if (param == null) continue;
+            for(String t : param.toString().split(" ")){
                 combinedMap.add(key+":"+t+"^"+boost);
             }
             for(int j=i-1;j>=0;j--){

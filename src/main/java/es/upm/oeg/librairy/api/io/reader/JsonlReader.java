@@ -55,6 +55,15 @@ public class  JsonlReader extends FileReader{
             if (map.containsKey("labels")){
                 document.setLabels(Arrays.asList(retrieve(jsonObject, map.get("labels"), false).split(" ")));
             }
+
+            if (map.containsKey("extra")){
+                Map<String,String> extraData = new HashMap<>();
+                for(String extraField : map.get("extra")){
+                    String val = retrieve(jsonObject, Arrays.asList(extraField), false);
+                    extraData.put(extraField,val);
+                }
+                document.setExtraData(extraData);
+            }
             document.setFormat("json");
             return Optional.of(document);
 

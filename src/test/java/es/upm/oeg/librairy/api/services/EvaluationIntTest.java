@@ -16,6 +16,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -31,18 +32,20 @@ public class EvaluationIntTest {
     @Test
     public void execute()  {
 
+        Integer testSize = 300;
+
         DataSource dataSource = DataSource.newBuilder()
                 .setFormat(ReaderFormat.SOLR_CORE)
                 .setCache(false)
-                .setFilter("source_s:jrc && lang_s:en && labels_t:[* TO *]")
+                .setFilter("source_s:jrc && lang_s:en && root-labels_t:[* TO *]")
                 .setDataFields(DataFields.newBuilder()
                         .setId("id")
                         .setLabels(Arrays.asList("root-labels_t"))
                         .setName("name_s")
                         .setText(Arrays.asList("txt_t"))
                         .build())
-                .setOffset(0)
-                .setSize(100)
+                .setOffset(20000)
+                .setSize(testSize)
                 .setUrl("http://librairy.linkeddata.es/solr/jrc")
                 .build()
                 ;
@@ -51,12 +54,12 @@ public class EvaluationIntTest {
                 .setUrl("http://librairy.linkeddata.es/solr/test1")
                 .build();
 
-        //String model = "http://librairy.linkeddata.es/jrc-en-model";
-        String model = "http://localhost:8080";
+        String model = "http://librairy.linkeddata.es/jrc-en-model";
+//        String model = "http://localhost:8080";
 
-        Integer refSize = 50;
+        Integer refSize = testSize;
 
-        List<Integer> intervals = Arrays.asList(3,5,10);
+        List<Integer> intervals = Collections.emptyList();//Arrays.asList(3,5,10);
         evaluationService.create(dataSource, dataSink, model, refSize, intervals);
     }
 

@@ -13,7 +13,10 @@
     "alpha": "0.1",
     "beta":"0.01",
     "iterations":"1000",
-    "stopwords":"lot chp sbs full itt nhs dfid phe ncs wee european project"
+    "lowercase":true,
+    "topwords":"10",
+    "stopwords":"lot chp sbs full itt nhs dfid phe ncs wee european project",
+    "stoplabels":""
   },
   "dataSource": {
     "cache": false,
@@ -26,7 +29,7 @@
         "name_s", "txt_t"
       ]
     },
-    "filter":"size_i:[100 TO 10000] && source_s:oo-api && lang_s:en && labels_t:[* TO *]",
+    "filter":"size_i:[100 TO *] && source_s:oo-api && lang_s:en && labels_t:[* TO *]",
     "format": "SOLR_CORE",
     "offset": 0,
     "size": -1,

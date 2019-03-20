@@ -4,7 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
@@ -21,6 +23,8 @@ public class Document {
     private String text;
 
     private List<String> labels = new ArrayList<>();
+
+    private Map<String,String> extraData = new HashMap<>();
 
     private String format;
 
@@ -76,5 +80,13 @@ public class Document {
 
     public void setLabels(List<String> labels) {
         this.labels = labels;
+    }
+
+    public Map<String, String> getExtraData() {
+        return extraData;
+    }
+
+    public void setExtraData(Map<String, String> extraData) {
+        this.extraData = extraData;
     }
 }

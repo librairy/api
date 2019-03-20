@@ -67,7 +67,7 @@ public class AnnotationService {
                         Map<String,Object> data = HashTopicBuilder.from(topicsMap);
 
                         if (document.getLabels() != null && !document.getLabels().isEmpty()){
-                            data.put("labels_t",document.getLabels().stream().collect(Collectors.joining(" ")));
+                            data.put("labels_t",document.getLabels().stream().sorted().collect(Collectors.joining(" ")));
                         }
 
                         if (!Strings.isNullOrEmpty(document.getName())){
