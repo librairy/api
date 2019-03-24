@@ -1,6 +1,6 @@
 package es.upm.oeg.librairy.api.controllers;
 
-import org.librairy.service.swagger.SwaggerConfig;
+import es.upm.oeg.librairy.service.swagger.SwaggerConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
 package es.upm.oeg.librairy.api;
 
-import org.librairy.service.modeler.controllers.*;
+import es.upm.oeg.librairy.service.modeler.controllers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.FilterType;
 //@ComponentScan({"org.librairy.service.learner","org.librairy.service.modeler.clients","org.librairy.service.modeler.service","cc.mallet.topics"})
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class, SolrAutoConfiguration.class})
-@ComponentScan(basePackages = {"es.upm.oeg.librairy.api","org.librairy.service","cc.mallet.topics"}, excludeFilters={
+@ComponentScan(basePackages = {"es.upm.oeg.librairy.api","es.upm.oeg.librairy.service","cc.mallet.topics"}, excludeFilters={
         @ComponentScan.Filter(type= FilterType.ASSIGNABLE_TYPE, value=ModelerAvroController.class),
         @ComponentScan.Filter(type= FilterType.ASSIGNABLE_TYPE, value=RestClassificationController.class),
         @ComponentScan.Filter(type= FilterType.ASSIGNABLE_TYPE, value=RestInferencesController.class),

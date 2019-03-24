@@ -49,6 +49,7 @@ public class ItemService {
 
         // get reference hash
         Map<String,Object> hash;
+        int offset = 0;
         if (reference.getDocument() != null){
             // from existing repo
             List<QueryDocument> doc = searcher.getBy(
@@ -60,6 +61,7 @@ public class ItemService {
             if (doc.isEmpty()) throw new RuntimeException("Document not found by id: " + reference.getDocument().getId());
             if (doc.size()>1) throw new RuntimeException("More than one document by id: " + reference.getDocument().getId());
             hash = doc.get(0).getData();
+            offset = 1;
         }else{
             // from inference
             TextReference textReference = reference.getText();
@@ -78,7 +80,7 @@ public class ItemService {
                 request.getSize(),
                 true);
 
-        List<Item> items = simDocs.stream().map(qd -> Item.newBuilder().setId(qd.getId()).setName(String.valueOf(qd.getData().get(nameField))).setScore(qd.getScore()).build()).collect(Collectors.toList());
+        List<Item> items = simDocs.stream().skip(offset).map(qd -> Item.newBuilder().setId(qd.getId()).setName(String.valueOf(qd.getData().get(nameField))).setScore(qd.getScore()).build()).collect(Collectors.toList());
 
 
 

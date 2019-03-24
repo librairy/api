@@ -8,8 +8,8 @@ import es.upm.oeg.librairy.api.builders.MailBuilder;
 import es.upm.oeg.librairy.api.model.TopicReport;
 import es.upm.oeg.librairy.api.service.StoplabelService;
 import es.upm.oeg.librairy.api.service.StopwordService;
-import org.librairy.service.modeler.facade.model.TopicWord;
-import org.librairy.service.modeler.service.TopicsService;
+import es.upm.oeg.librairy.service.modeler.facade.model.TopicWord;
+import es.upm.oeg.librairy.service.modeler.service.TopicsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,6 +67,10 @@ public class LDALauncher {
 
         List<String> stoplabels = new ArrayList<>(parameters.getStoplabels());
         List<String> stopwords  = new ArrayList<>(parameters.getStopwords());
+
+        Boolean autolabels      = parameters.getAutolabels();
+        Boolean autowords       = parameters.getAutowords();
+
         try{
             int swRetries = 0;
             do{
@@ -82,6 +83,7 @@ public class LDALauncher {
 
                     pipe = report.getPipe();
 
+                    if ((!autolabels) && (!autowords)) break;
 
                     Map<Integer, List<TopicWord>> topWords = topicsService.getTopWords(model, parameters.getNumTopWords());
 
@@ -95,12 +97,15 @@ public class LDALauncher {
 
                     }
 
-                    List<String> stoplabelCandidateList = stoplabelService.detect(topics, parameters.getNumTopWords());
+                    List<String> stoplabelCandidateList = Collections.emptyList();
+
+                    if (autolabels) {
+                        stoplabelCandidateList = stoplabelService.detect(topics, parameters.getNumTopWords());
+                    }
 
 
-                    if (stoplabelCandidateList.isEmpty()){
+                    if (stoplabelCandidateList.isEmpty() && autowords){
 
-                        // TODO fix infinite loop
                         List<String> stopWordCandidateList = stopwordService.detect(topics);
 
                         if (stopWordCandidateList.isEmpty()) break;

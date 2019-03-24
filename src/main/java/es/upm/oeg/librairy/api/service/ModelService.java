@@ -64,6 +64,8 @@ public class ModelService {
             if (parameters.containsKey("seed"))         ldaParameters.setSeed(Integer.valueOf(parameters.get("seed")));
             if (parameters.containsKey("stoplabels"))   ldaParameters.setStoplabels(Arrays.asList(parameters.get("stoplabels").split(" ")));
             if (parameters.containsKey("lowercase"))    ldaParameters.setLowercase(Boolean.valueOf(parameters.get("lowercase").toUpperCase()));
+            if (parameters.containsKey("autolabels"))   ldaParameters.setAutolabels(Boolean.valueOf(parameters.get("autolabels").toUpperCase()));
+            if (parameters.containsKey("autowords"))    ldaParameters.setAutowords(Boolean.valueOf(parameters.get("autowords").toUpperCase()));
 
 
             ldaParameters.setSize(corpus.getNumDocs());

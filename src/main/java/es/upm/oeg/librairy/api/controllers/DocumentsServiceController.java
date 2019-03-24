@@ -55,6 +55,9 @@ public class DocumentsServiceController {
             service.createDocuments(request);
 
             return new ResponseEntity(new es.upm.oeg.librairy.api.facade.model.rest.Task(date,"QUEUED","Task created"), HttpStatus.ACCEPTED);
+        }catch (RuntimeException e){
+            LOG.warn("Process error",e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             LOG.error("IO Error", e);
             return new ResponseEntity(new es.upm.oeg.librairy.api.facade.model.rest.Task(date, "REJECTED", "IO error"),HttpStatus.INTERNAL_SERVER_ERROR);

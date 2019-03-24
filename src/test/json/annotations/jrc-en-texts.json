@@ -2,16 +2,18 @@
   "contactEmail": "cbadenes@fi.upm.es",
   "dataSink": {
     "format": "SOLR_CORE",
-    "url": "http://librairy.linkeddata.es/solr/documents"
+    "url": "http://librairy.linkeddata.es/solr/tbfy"
   },
   "dataSource": {
     "dataFields": {
       "id": "id",
+      "name": "name_s",
+      "labels":[ "labels_t" ],
       "text": [
-        "txt_t", "name_s"
+        "txt_t"
       ]
     },
-    "filter": "txt_t:[* TO *] && lang_s:en",
+    "filter": "source_s:jrc && size_i:[10 TO *] && lang_s:en",
     "format": "SOLR_CORE",
     "offset": 0,
     "size": -1,

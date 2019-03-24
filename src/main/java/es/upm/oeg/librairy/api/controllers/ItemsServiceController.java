@@ -55,6 +55,9 @@ public class ItemsServiceController {
             List<es.upm.oeg.librairy.api.facade.model.avro.Item> items = service.createItems(request);
 
             return new ResponseEntity(items.stream().map(i -> new Item(i)).collect(Collectors.toList()), HttpStatus.OK);
+        }catch (RuntimeException e){
+            LOG.warn("Process error",e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             LOG.error("Unexpected Error", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

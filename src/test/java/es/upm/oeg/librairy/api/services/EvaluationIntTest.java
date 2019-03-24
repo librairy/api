@@ -37,7 +37,8 @@ public class EvaluationIntTest {
         DataSource dataSource = DataSource.newBuilder()
                 .setFormat(ReaderFormat.SOLR_CORE)
                 .setCache(false)
-                .setFilter("source_s:jrc && lang_s:en && root-labels_t:[* TO *]")
+                //.setFilter("source_s:jrc && lang_s:en && root-labels_t:[* TO *]")
+                .setFilter("source_s:jrc && lang_s:es && root-labels_t:[* TO *]")
                 .setDataFields(DataFields.newBuilder()
                         .setId("id")
                         .setLabels(Arrays.asList("root-labels_t"))
@@ -54,7 +55,8 @@ public class EvaluationIntTest {
                 .setUrl("http://librairy.linkeddata.es/solr/test1")
                 .build();
 
-        String model = "http://librairy.linkeddata.es/jrc-en-model";
+        //String model = "http://librairy.linkeddata.es/jrc-en-model";
+        String model = "http://librairy.linkeddata.es/jrc-es-model";
 //        String model = "http://localhost:8080";
 
         Integer refSize = testSize;

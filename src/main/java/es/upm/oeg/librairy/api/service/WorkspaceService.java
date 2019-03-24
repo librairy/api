@@ -5,7 +5,7 @@ import es.upm.oeg.librairy.api.builders.CorpusBuilder;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
 import es.upm.oeg.librairy.api.facade.model.avro.TopicsRequest;
 import org.apache.commons.io.FileUtils;
-import org.librairy.service.modeler.clients.LibrairyNlpClient;
+import es.upm.oeg.librairy.service.modeler.clients.LibrairyNlpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

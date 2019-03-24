@@ -2,7 +2,7 @@
   "name": "jrc-es-model",
   "description": "Collection of legislative texts (ES) from the European Union generated between years 1958 and 2006",
   "contactEmail": "cbadenes@fi.upm.es",
-  "version": "1.0",
+  "version": "1.2",
   "annotate":false,
   "parameters": {
     "maxdocratio": "0.9",
@@ -14,10 +14,12 @@
     "beta":"0.01",
     "language": "es",
     "iterations":"1000",
-    "lowercase":true,
+    "lowercase":"true",
     "topwords":"10",
+    "autolabels":"false",
+    "autowords":"true",
     "stopwords":"",
-    "stoplabels":""
+    "stoplabels":"1039 1191 1282 1346 1390 1652 1690 1748 2117 2172 2180 2186 2190 2242 2258 2287 2288 2398 2616 2814 3013 3025 317 3232 3257 337 3582 3683 3689 3928 3952 3954 41 4157 4367 4587 4697 5265 565 5776 5974 6011 6382 6922 778 795 8365 962"
   },
   "dataSource": {
     "cache": false,

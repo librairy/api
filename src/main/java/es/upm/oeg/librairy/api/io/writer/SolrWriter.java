@@ -53,7 +53,7 @@ public class SolrWriter implements Writer {
             LOG.debug("[" + counter.incrementAndGet() + "] Document '" + id + "' updated");
 
             if (counter.get() % 100 == 0){
-                LOG.info("Committing partial annotations["+ this.counter.get() +"]");
+                LOG.debug("Committing partial annotations["+ this.counter.get() +"]");
                 solrClient.commit();
             }
 
@@ -81,7 +81,7 @@ public class SolrWriter implements Writer {
             LOG.info("[" + counter.incrementAndGet() + "] Document '" + id + "' saved");
 
             if (counter.get() % 100 == 0){
-                LOG.info("Committing partial annotations["+ this.counter.get() +"]");
+                LOG.debug("Committing partial annotations["+ this.counter.get() +"]");
                 solrClient.commit();
             }
 

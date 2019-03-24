@@ -7,8 +7,10 @@
   "dataSource": {
     "dataFields": {
       "id": "id",
+      "name": "name_s",
+      "labels":[ "labels_t" ],
       "text": [
-        "txt_t", "name_s"
+        "txt_t"
       ]
     },
     "filter": "source_s:oo-api && size_i:[10 TO *] && lang_s:en",

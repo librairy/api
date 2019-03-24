@@ -5,7 +5,7 @@ import es.upm.oeg.librairy.api.service.InferenceService;
 import es.upm.oeg.librairy.api.utils.WriterUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
-import org.librairy.service.modeler.facade.rest.model.Topic;
+import es.upm.oeg.librairy.service.modeler.facade.rest.model.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
