@@ -1,4 +1,4 @@
-package es.upm.oeg.librairy.api.controllers;
+package es.upm.oeg.librairy.api.controllers.security;
 
 import es.upm.oeg.librairy.service.swagger.SwaggerConfig;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,9 +45,6 @@ public class BasicAuthController extends SwaggerConfig {
         return list;
     }
 
-//    private ApiKey apiKey() {
-//        return new ApiKey("Authorization", "Authorization", "header");
-//    }
 
     private BasicAuth basicAuth(){
         return new BasicAuth("basicAuth");
@@ -61,9 +58,6 @@ public class BasicAuthController extends SwaggerConfig {
     }
 
     List<SecurityReference> defaultAuth() {
-//        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-//        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-//        authorizationScopes[0] = authorizationScope;
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[0];
         return newArrayList(new SecurityReference("basicAuth", authorizationScopes));
     }

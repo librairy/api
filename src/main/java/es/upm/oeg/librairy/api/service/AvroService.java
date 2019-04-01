@@ -1,4 +1,4 @@
-package es.upm.oeg.librairy.api.controllers;
+package es.upm.oeg.librairy.api.service;
 
 import es.upm.oeg.librairy.api.facade.AvroServer;
 import es.upm.oeg.librairy.api.facade.model.avro.LibrairyApi;
@@ -11,7 +11,7 @@ import javax.annotation.PreDestroy;
 import java.io.IOException;
 
 @Component
-public class LearnerAvroController {
+public class AvroService {
 
     @Autowired
     LibrairyApi service;

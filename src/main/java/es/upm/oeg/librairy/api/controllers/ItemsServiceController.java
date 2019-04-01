@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@ConditionalOnProperty(value="api.items.enabled")
 @RequestMapping("/items")
 @Api(tags="/items", description = "document suggestions")
 public class ItemsServiceController {
@@ -56,7 +58,7 @@ public class ItemsServiceController {
 
             return new ResponseEntity(items.stream().map(i -> new Item(i)).collect(Collectors.toList()), HttpStatus.OK);
         }catch (RuntimeException e){
-            LOG.warn("Process error",e.getMessage());
+            LOG.warn("Process error",e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             LOG.error("Unexpected Error", e);

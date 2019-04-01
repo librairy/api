@@ -42,7 +42,7 @@ public class EvaluationService {
     AnnotationService annotationService;
 
 
-    public void create(DataSource dataSource, DataSink dataSink,String model, Integer refSize, List<Integer> intervals){
+    public void create(DataSource dataSource, DataSink dataSink,String model, Integer refSize, List<Integer> intervals, Boolean annotate){
 
         try{
 
@@ -51,14 +51,16 @@ public class EvaluationService {
             Writer writer       = WriterFactory.newFrom(dataSink);
 
             // Annotate
-            writer.reset();
-            AnnotationsRequest annotationRequest = AnnotationsRequest.newBuilder()
-                    .setDataSource(dataSource)
-                    .setDataSink(dataSink)
-                    .setModelEndpoint(model)
-                    .setContactEmail("internal@mail.com")
-                    .build();
-            annotationService.create(annotationRequest);
+            if (annotate){
+                writer.reset();
+                AnnotationsRequest annotationRequest = AnnotationsRequest.newBuilder()
+                        .setDataSource(dataSource)
+                        .setDataSink(dataSink)
+                        .setModelEndpoint(model)
+                        .setContactEmail("internal@mail.com")
+                        .build();
+                annotationService.create(annotationRequest);
+            }
 
             // Evaluate
             LOG.info("ready to evaluate annotations...");
@@ -87,6 +89,9 @@ public class EvaluationService {
             Map<String,Evaluation> t1Results    = new ConcurrentHashMap<>();
             Map<String,Evaluation> t2Results    = new ConcurrentHashMap<>();
 
+            List<Double> byLabelsSize = new ArrayList<>();
+            List<Double> byHashSize = new ArrayList<>();
+
             // Create Evaluations
             Long maxSize = outputSource.getSize();
             AtomicInteger counter = new AtomicInteger();
@@ -113,6 +118,7 @@ public class EvaluationService {
                                 .setDataSource(outputSource)
                                 .build();
                         List<Item> itemsByLabels    = itemService.getItemsByLabels(itemsRefRequest);
+                        byLabelsSize.add(Double.valueOf(itemsByLabels.size()));
 
                         int num = intervals.isEmpty()? refSize : intervals.stream().reduce((a, b) -> a > b ? a : b).get() + 1;
                         ItemsRequest itemsValRequest = ItemsRequest.newBuilder()
@@ -121,6 +127,7 @@ public class EvaluationService {
                                 .setDataSource(outputSource)
                                 .build();
                         List<Item> itemsByHash      = itemService.getItemsByHash(itemsValRequest).stream().skip(1).collect(Collectors.toList());
+                        byHashSize.add(Double.valueOf(itemsByHash.size()));
 
                         List<String> refData = itemsByLabels.stream().map(i -> i.getId()).collect(Collectors.toList());
                         List<String> valData = itemsByHash.stream().map(i -> i.getId()).collect(Collectors.toList());
@@ -158,6 +165,9 @@ public class EvaluationService {
             report.append(printResults(t1Results, "Topic-based Hash Evaluation - Level 1", Optional.empty()));
             report.append(printResults(t2Results, "Topic-based Hash Evaluation - Level 2", Optional.empty()));
 
+            report.append("\nReference List Size: "  + new Stats(byLabelsSize));
+            report.append("\nCandidate List Size: "    + new Stats(byHashSize));
+
             //mailService.notifyAnnotation(annotationRequest,"Annotation completed");
             LOG.info("Result: " + report.toString());
             LOG.info("Evaluation Completed!");
@@ -170,12 +180,15 @@ public class EvaluationService {
     private String printResults(Map<String,Evaluation> table, String id, Optional<Integer> range){
         StringBuilder report = new StringBuilder();
         report.append("# ").append(id).append(" :").append("\n");
-        Stats precisionStats   = new Stats(table.entrySet().parallelStream().map(e -> range.isPresent()? e.getValue().getPrecisionAt(range.get()) : e.getValue().getPrecision()).collect(Collectors.toList()));
+        Stats precisionStats   = new Stats(table.entrySet().stream().map(e -> range.isPresent()? e.getValue().getPrecisionAt(range.get()) : e.getValue().getPrecision()).collect(Collectors.toList()));
         report.append(" - Precision:").append(precisionStats).append("\n");
-        Stats recallStats       = new Stats(table.entrySet().parallelStream().map(e -> range.isPresent()? e.getValue().getRecallAt(range.get()) : e.getValue().getRecall()).collect(Collectors.toList()));
+        Stats recallStats       = new Stats(table.entrySet().stream().map(e -> range.isPresent()? e.getValue().getRecallAt(range.get()) : e.getValue().getRecall()).collect(Collectors.toList()));
         report.append(" - Recall:").append(recallStats).append("\n");
-        Stats fMeasureStats     = new Stats(table.entrySet().parallelStream().map(e -> range.isPresent()? e.getValue().getFMeasureAtN(range.get()) : e.getValue().getFMeasure()).collect(Collectors.toList()));
+        Stats fMeasureStats     = new Stats(table.entrySet().stream().map(e -> range.isPresent()? e.getValue().getFMeasureAtN(range.get()) : e.getValue().getFMeasure()).collect(Collectors.toList()));
         report.append(" - FMeasure:").append(fMeasureStats).append("\n");
+        Stats averagedPrecisionStats   = new Stats(table.entrySet().stream().map(e -> range.isPresent()? e.getValue().getPrecisionAt(range.get()) : e.getValue().getAveragedPrecision()).collect(Collectors.toList()));
+        report.append(" - meanAveragedPrecision:").append(averagedPrecisionStats).append("\n");
+
         report.append("\n");
         return report.toString();
 

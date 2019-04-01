@@ -2,7 +2,7 @@
   "name": "jrc-es-model",
   "description": "Collection of legislative texts (ES) from the European Union generated between years 1958 and 2006",
   "contactEmail": "cbadenes@fi.upm.es",
-  "version": "1.2",
+  "version": "1.3",
   "annotate":false,
   "parameters": {
     "maxdocratio": "0.9",

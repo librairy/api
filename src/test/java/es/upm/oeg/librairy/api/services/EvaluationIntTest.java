@@ -4,6 +4,9 @@ package es.upm.oeg.librairy.api.services;
 import es.upm.oeg.librairy.api.Application;
 import es.upm.oeg.librairy.api.facade.AvroClient;
 import es.upm.oeg.librairy.api.facade.model.avro.*;
+import es.upm.oeg.librairy.api.io.writer.Writer;
+import es.upm.oeg.librairy.api.io.writer.WriterFactory;
+import es.upm.oeg.librairy.api.service.AnnotationService;
 import es.upm.oeg.librairy.api.service.EvaluationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,15 +32,18 @@ public class EvaluationIntTest {
     @Autowired
     EvaluationService evaluationService;
 
-    @Test
-    public void execute()  {
+    @Autowired
+    AnnotationService annotationService;
 
-        Integer testSize = 300;
+    @Test
+    public void monolingual()  {
+
+        Integer testSize = 1000;
 
         DataSource dataSource = DataSource.newBuilder()
                 .setFormat(ReaderFormat.SOLR_CORE)
                 .setCache(false)
-                //.setFilter("source_s:jrc && lang_s:en && root-labels_t:[* TO *]")
+//                .setFilter("source_s:jrc && lang_s:en && root-labels_t:[* TO *]")
                 .setFilter("source_s:jrc && lang_s:es && root-labels_t:[* TO *]")
                 .setDataFields(DataFields.newBuilder()
                         .setId("id")
@@ -45,7 +51,7 @@ public class EvaluationIntTest {
                         .setName("name_s")
                         .setText(Arrays.asList("txt_t"))
                         .build())
-                .setOffset(20000)
+                .setOffset(19000)
                 .setSize(testSize)
                 .setUrl("http://librairy.linkeddata.es/solr/jrc")
                 .build()
@@ -55,14 +61,81 @@ public class EvaluationIntTest {
                 .setUrl("http://librairy.linkeddata.es/solr/test1")
                 .build();
 
-        //String model = "http://librairy.linkeddata.es/jrc-en-model";
+//        String model = "http://librairy.linkeddata.es/jrc-en-model";
         String model = "http://librairy.linkeddata.es/jrc-es-model";
 //        String model = "http://localhost:8080";
 
         Integer refSize = testSize;
 
         List<Integer> intervals = Collections.emptyList();//Arrays.asList(3,5,10);
-        evaluationService.create(dataSource, dataSink, model, refSize, intervals);
+        evaluationService.create(dataSource, dataSink, model, refSize, intervals, true);
+    }
+
+    @Test
+    public void multilingual() throws IOException {
+
+        Integer testSize = 1000;
+
+        DataSink dataSink = DataSink.newBuilder()
+                .setFormat(WriterFormat.SOLR_CORE)
+                .setUrl("http://librairy.linkeddata.es/solr/test1")
+                .build();
+
+        Writer writer       = WriterFactory.newFrom(dataSink);
+        writer.reset();
+
+
+        LOG.info("Annotating SPANISH documents..");
+        AnnotationsRequest ar1 = AnnotationsRequest.newBuilder()
+            .setDataSource(DataSource.newBuilder()
+                    .setFormat(ReaderFormat.SOLR_CORE)
+                    .setCache(false)
+                    .setFilter("source_s:jrc && root-labels_t:[* TO *] && lang_s:es")
+                    .setDataFields(DataFields.newBuilder()
+                            .setId("id")
+                            .setLabels(Arrays.asList("root-labels_t"))
+                            .setName("name_s")
+                            .setText(Arrays.asList("txt_t"))
+                            .build())
+                    .setOffset(19000)
+                    .setSize(testSize)
+                    .setUrl("http://librairy.linkeddata.es/solr/jrc")
+                    .build())
+            .setDataSink(dataSink)
+            .setModelEndpoint("http://librairy.linkeddata.es/jrc-es-model")
+            .setContactEmail("internal@mail.com")
+            .build();
+        annotationService.create(ar1);
+
+
+        LOG.info("Annotating ENGLISH documents..");
+        AnnotationsRequest ar2 = AnnotationsRequest.newBuilder()
+                .setDataSource(DataSource.newBuilder()
+                        .setFormat(ReaderFormat.SOLR_CORE)
+                        .setCache(false)
+                        .setFilter("source_s:jrc && root-labels_t:[* TO *] && lang_s:en")
+                        .setDataFields(DataFields.newBuilder()
+                                .setId("id")
+                                .setLabels(Arrays.asList("root-labels_t"))
+                                .setName("name_s")
+                                .setText(Arrays.asList("txt_t"))
+                                .build())
+                        .setOffset(19000)
+                        .setSize(testSize)
+                        .setUrl("http://librairy.linkeddata.es/solr/jrc")
+                        .build())
+                .setDataSink(dataSink)
+                .setModelEndpoint("http://librairy.linkeddata.es/jrc-en-model")
+                .setContactEmail("internal@mail.com")
+                .build();
+        annotationService.create(ar2);
+
+
+
+        Integer refSize = testSize*2;
+
+        List<Integer> intervals = Collections.emptyList();//Arrays.asList(3,5,10);
+        evaluationService.create(ar1.getDataSource(), dataSink, "", refSize, intervals, false);
     }
 
 }

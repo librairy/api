@@ -1,0 +1,23 @@
+{
+  "contactEmail": "cbadenes@fi.upm.es",
+  "dataSink": {
+    "format": "SOLR_CORE",
+    "url": "http://librairy.linkeddata.es/solr/tbfy"
+  },
+  "dataSource": {
+    "dataFields": {
+      "id": "id",
+      "name": "name_s",
+      "labels":[ "labels_t" ],
+      "text": [
+        "txt_t"
+      ]
+    },
+    "filter": "size_i:[10 TO *] && lang_s:es",
+    "format": "SOLR_CORE",
+    "offset": 0,
+    "size": -1,
+    "url": "http://librairy.linkeddata.es/solr/tbfy"
+  },
+  "modelEndpoint": "http://librairy.linkeddata.es/jrc-es-model"
+}

@@ -1,4 +1,4 @@
-package es.upm.oeg.librairy.api.controllers;
+package es.upm.oeg.librairy.api.controllers.security;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

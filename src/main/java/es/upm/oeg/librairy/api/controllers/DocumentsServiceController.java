@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 @RestController
+@ConditionalOnProperty(value="api.documents.enabled")
 @RequestMapping("/documents")
 @Api(tags="/documents", description = "save documents")
 public class DocumentsServiceController {
@@ -56,7 +58,7 @@ public class DocumentsServiceController {
 
             return new ResponseEntity(new es.upm.oeg.librairy.api.facade.model.rest.Task(date,"QUEUED","Task created"), HttpStatus.ACCEPTED);
         }catch (RuntimeException e){
-            LOG.warn("Process error",e.getMessage());
+            LOG.warn("Process error",e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             LOG.error("IO Error", e);
