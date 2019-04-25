@@ -32,7 +32,7 @@ public class MoveDocumentsIntTest {
     private static final Logger LOG = LoggerFactory.getLogger(MoveDocumentsIntTest.class);
 
     @Test
-    public void execute() throws UnirestException, IOException {
+    public void moveDocs() throws UnirestException, IOException {
 
         String model = "http://librairy.linkeddata.es/jrc-en-model";
 
@@ -106,5 +106,74 @@ public class MoveDocumentsIntTest {
 
 
     }
+
+
+    @Test
+    public void moveLabels() throws UnirestException, IOException {
+
+
+        DataSource fromSource = DataSource.newBuilder()
+                .setCache(false)
+                .setDataFields(
+                        DataFields.newBuilder()
+                                .setId("id")
+                                .setExtra(Arrays.asList("related_t","de_s","en_s","fr_s","it_s","es_s","root_t","thesaurus_s"))
+                                .build()
+                )
+                .setFormat(ReaderFormat.SOLR_CORE)
+                .setOffset(0)
+                .setSize(-1)
+                .setUrl("http://librairy.linkeddata.es/solr/categories")
+                .build();
+
+
+        DataSink dataSink = DataSink.newBuilder()
+                .setFormat(WriterFormat.SOLR_CORE)
+                .setUrl("http://librairy.linkeddata.es/solr/eurovoc")
+                .build();
+
+        Reader reader       = ReaderFactory.newFrom(fromSource);
+        Optional<Document> doc = Optional.empty();
+
+        Writer writer       = WriterFactory.newFrom(dataSink);
+
+        InferenceService inferenceService = new InferenceService();
+
+        AtomicInteger counter = new AtomicInteger();
+
+        ParallelExecutor executor = new ParallelExecutor();
+        while( (doc = reader.next()).isPresent()){
+            final Document document = doc.get();
+            executor.submit(() -> {
+                try{
+                    Map<String,Object> data = new HashMap<>();
+                    data.put("related_t", document.getExtraData().get("related_t"));
+                    data.put("de_s", document.getExtraData().get("de_s"));
+                    data.put("fr_s", document.getExtraData().get("fr_s"));
+                    data.put("en_s", document.getExtraData().get("en_s"));
+                    data.put("es_s", document.getExtraData().get("es_s"));
+                    data.put("it_s", document.getExtraData().get("it_s"));
+                    data.put("root_t", document.getExtraData().get("root_t"));
+                    data.put("thesaurus_s", document.getExtraData().get("thesaurus_s"));
+
+                    writer.save(document.getId(), data);
+
+                }catch (Exception e){
+                    LOG.error("Unexpected error",e);
+                }
+
+            });
+
+        }
+        executor.awaitTermination(1l, TimeUnit.HOURS);
+
+        writer.close();
+
+        LOG.info(counter.get() + " documents moved");
+
+
+    }
+
+
 
 }

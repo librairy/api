@@ -1,0 +1,21 @@
+{
+  "contactEmail": "cbadenes@fi.upm.es",
+  "dataSink": {
+    "format": "SOLR_CORE",
+    "url": "http://librairy.linkeddata.es/solr/lynx"
+  },
+  "dataSource": {
+    "dataFields": {
+      "id": "id",
+      "text": [
+        "txt_t"
+      ]
+    },
+    "filter": "*:*",
+    "format": "SOLR_CORE",
+    "offset": 0,
+    "size": -1,
+    "url": "http://librairy.linkeddata.es/solr/lynx"
+  },
+  "modelEndpoint": "http://librairy.linkeddata.es/jrc-es-model"
+}

@@ -1,0 +1,22 @@
+{
+  "contactEmail": "cbadenes@fi.upm.es",
+  "dataSink": {
+    "format": "SOLR_CORE",
+    "url": "http://librairy.linkeddata.es/solr/lynx"
+  },
+  "dataSource": {
+    "dataFields": {
+      "id": "0",
+      "labels": [
+      ],
+      "text": [
+        "1"
+      ]
+    },
+    "filter":"\t",
+    "format": "CSV",
+    "offset": 0,
+    "size": -1,
+    "url": "http://lynx-project.eu/data/20190425corpuscarlos.tsv"
+  }
+}

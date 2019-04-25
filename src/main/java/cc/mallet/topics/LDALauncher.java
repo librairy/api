@@ -90,7 +90,7 @@ public class LDALauncher {
                     Map<String,List<String>> topics = new HashMap<>();
 
                     for (Map.Entry<Integer,List<TopicWord>> entry : topWords.entrySet()){
-                        Label name = model.topicAlphabet.lookupLabel(entry.getKey());
+                        Label name = model.topicAlphabet.lookupLabel(entry.getKey().intValue());
                         List<String> words = entry.getValue().stream().map(tw -> tw.getValue()).collect(Collectors.toList());
                         String nameL = name.toString();
                         topics.put(nameL, words);
