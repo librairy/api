@@ -13,12 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -52,7 +50,10 @@ public class TopicsServiceController {
             @ApiResponse(code = 202, message = "Accepted", response = String.class),
     })
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<es.upm.oeg.librairy.api.facade.model.rest.Task> create(@RequestBody TopicsRequest request)  {
+    public ResponseEntity<es.upm.oeg.librairy.api.facade.model.rest.Task> create(
+            @RequestBody TopicsRequest request,
+            @RequestHeader HttpHeaders headers)
+    {
         String date = DateBuilder.now();
         try {
             if (!request.isValid()) return new ResponseEntity(new es.upm.oeg.librairy.api.facade.model.rest.Task(date, "REJECTED", "Bad Request"),HttpStatus.BAD_REQUEST);

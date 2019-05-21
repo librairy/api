@@ -17,5 +17,5 @@
     "size": -1,
     "url": "http://librairy.linkeddata.es/solr/lynx"
   },
-  "modelEndpoint": "http://librairy.linkeddata.es/jrc-es-model"
+  "modelEndpoint": "http://librairy.linkeddata.es/lynx-model"
 }

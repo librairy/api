@@ -1,0 +1,16 @@
+{
+  "dataSource": {
+    "dataFields": {
+      "id": "id"
+    },
+    "filter": "*:*",
+    "format": "SOLR_CORE",
+    "url": "http://librairy.linkeddata.es/data/lynx"
+  },
+  "reference": {
+    "document": {
+      "id": "BOE-A-1996-2545"
+    }
+  },
+  "size": 10
+}

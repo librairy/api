@@ -197,7 +197,8 @@ public class MailService {
             message.setReplyTo(InternetAddress.parse("no_reply@librairy.org", false));
 
             message.setSubject(subject);
-            message.setText(txt);
+            //message.setText(txt);
+            message.setContent(txt, "text/HTML; charset=UTF-8");
             message.setSentDate(new Date());
 
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(dest,false));

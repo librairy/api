@@ -109,16 +109,20 @@ public class SolrSearcher implements Searcher {
 
         List<String> sortIds = params.keySet().stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toList());
 
+        int multiplier = 10;
         for(int i=0;i<sortIds.size();i++){
             String key = sortIds.get(i);
-            int boost = params.size();
+            int base = Double.valueOf(multiplier/(i+1)).intValue();
+            int boost = Double.valueOf(Math.pow(base, params.size()-i)).intValue();
             Object param = params.get(sortIds.get(i));
             if (param == null) continue;
             for(String t : param.toString().split(" ")){
                 combinedMap.add(key+":"+t+"^"+boost);
             }
             for(int j=i-1;j>=0;j--){
-                boost--;
+                int innerMultiplier = Double.valueOf(multiplier/(i+1)).intValue();
+                int innerbase = Double.valueOf(innerMultiplier/(j+1)).intValue();
+                boost= Double.valueOf(Math.pow(innerbase, params.size()-j)).intValue();
                 for(String t : params.get(sortIds.get(j)).toString().split(" ")){
                     combinedMap.add(key+":"+t+"^"+boost);
                 }

@@ -15,6 +15,7 @@ import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.ProgressMessage;
 import com.spotify.docker.client.messages.RegistryAuth;
 import com.spotify.docker.client.messages.RegistryConfigs;
+import es.upm.oeg.librairy.api.facade.model.avro.Docker;
 import es.upm.oeg.librairy.api.facade.model.avro.TopicsRequest;
 import es.upm.oeg.librairy.api.model.DockerHubCredentials;
 import org.apache.velocity.Template;
@@ -101,6 +102,8 @@ public class ExportService {
         String name         = request.getName();
         String description  = request.getDescription();
 
+
+
         Export export = new Export();
         export.setContactEmail(email);
         export.setContactName(contactName);
@@ -108,12 +111,24 @@ public class ExportService {
         export.setRemoveAfterPush(true);
         export.setPushDockerHub(true);
 
+        Docker dockerHubCredentials = request.getDocker();
+
         DockerHubCredentials dockerCredentials = new DockerHubCredentials();
-        dockerCredentials.setEmail(dockerEmail);
-        dockerCredentials.setUsername(dockerUser);
-        dockerCredentials.setPassword(dockerPwd);
-        String repoName = dockerRepo+"/"+name.toLowerCase().replaceAll("\\W+", "-")+":"+request.getVersion().toLowerCase();
+
+        //dockerCredentials.setEmail(dockerEmail);
+        dockerCredentials.setEmail(dockerHubCredentials.getEmail());
+
+        //dockerCredentials.setUsername(dockerUser);
+        dockerCredentials.setUsername(dockerHubCredentials.getUser());
+
+        //dockerCredentials.setPassword(dockerPwd);
+        dockerCredentials.setPassword(dockerHubCredentials.getPassword());
+
+        //String repoName = dockerRepo+"/"+name.toLowerCase().replaceAll("\\W+", "-")+":"+request.getVersion().toLowerCase();
+        String repoName = dockerHubCredentials.getRepository().toLowerCase()+":"+request.getVersion().toLowerCase();
+
         dockerCredentials.setRepository(repoName);
+
         export.setCredentials(dockerCredentials);
 
         export.setTitle(name);

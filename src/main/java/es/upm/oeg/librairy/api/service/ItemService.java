@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -50,6 +47,7 @@ public class ItemService {
         // get reference hash
         Map<String,Object> hash;
         int offset = 0;
+        int max = request.getSize();
         if (reference.getDocument() != null){
             // from existing repo
             List<QueryDocument> doc = searcher.getBy(
@@ -62,6 +60,7 @@ public class ItemService {
             if (doc.size()>1) throw new RuntimeException("More than one document by id: " + reference.getDocument().getId());
             hash = doc.get(0).getData();
             offset = 1;
+            max++;
         }else{
             // from inference
             TextReference textReference = reference.getText();
@@ -72,18 +71,15 @@ public class ItemService {
         // query by hash
         // convert hash into query params
 
-
         List<QueryDocument> simDocs = searcher.getBy(
                 hash,
                 dataSource.getFilter(),
                 Optional.of(Arrays.asList(nameField)),
-                request.getSize(),
+                max,
                 true);
 
-        List<Item> items = simDocs.stream().skip(offset).map(qd -> Item.newBuilder().setId(qd.getId()).setName(String.valueOf(qd.getData().get(nameField))).setScore(qd.getScore()).build()).collect(Collectors.toList());
 
-
-
+        List<Item> items = simDocs.stream().skip(offset).map(qd -> Item.newBuilder().setId(qd.getId()).setName(String.valueOf(qd.getData().get(nameField)).equalsIgnoreCase("null")?null:String.valueOf(qd.getData().get(nameField))).setScore(qd.getScore()).build()).collect(Collectors.toList());
 
         return items;
 

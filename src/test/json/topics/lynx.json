@@ -1,9 +1,9 @@
 {
-  "name": "lynx-model",
+  "name": "lynx-es-model",
   "description": "topic model created from lynx dataset",
   "contactEmail": "cbadenes@fi.upm.es",
   "version": "0.1",
-  "annotate":false,
+  "annotate":true,
   "parameters": {
     "maxdocratio": "0.9",
     "minfreq": "5",
@@ -11,9 +11,9 @@
     "retries":"0",
     "seed":"1066",
     "alpha": "0.1",
-    "topics":"50",
+    "topics":"100",
     "beta":"0.01",
-    "language": "en",
+    "language": "es",
     "iterations":"1000",
     "lowercase":"true",
     "topwords":"50",
@@ -23,14 +23,13 @@
     "stoplabels":""
   },
   "dataSource": {
-    "cache": false,
+    "cache": true,
     "dataFields": {
       "id": "id",
       "text": [
         "txt_t"
       ]
     },
-    "filter":"*:*",
     "format": "SOLR_CORE",
     "offset": 0,
     "size": -1,
