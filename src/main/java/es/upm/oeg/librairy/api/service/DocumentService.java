@@ -60,7 +60,7 @@ public class DocumentService {
                 ParallelExecutor parallelExecutor = new ParallelExecutor();
                 final String date = DateBuilder.now();
 
-                final String source = Strings.isNullOrEmpty(datasource.getFilter())? datasource.getUrl() : datasource.getUrl()+"?"+ URLEncoder.encode(datasource.getFilter(),"UTF-8");
+                final String source = Strings.isNullOrEmpty(datasource.getName())? datasource.getUrl() : datasource.getName().replace(" ","-");
 
                 final ConcurrentHashMap<String,Integer> errors = new ConcurrentHashMap<>();
                 while(( maxSize<0 || counter.get()<maxSize) &&  (doc = reader.next()).isPresent()){

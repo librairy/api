@@ -5,6 +5,7 @@
     "url": "http://localhost:8983/solr/documents"
   },
   "dataSource": {
+    "name":"jrc",
     "dataFields": {
       "id": "id",
       "name": "name_s",

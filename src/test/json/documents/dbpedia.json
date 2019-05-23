@@ -5,6 +5,7 @@
     "url": "http://localhost:8983/solr/documents"
   },
   "dataSource": {
+    "name":"dbpedia",
     "dataFields": {
       "id": "1",
       "labels": [

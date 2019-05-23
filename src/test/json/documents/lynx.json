@@ -5,6 +5,7 @@
     "url": "http://librairy.linkeddata.es/solr/lynx"
   },
   "dataSource": {
+    "name":"lynx",
     "dataFields": {
       "id": "0",
       "labels": [
