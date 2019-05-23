@@ -1,6 +1,13 @@
 package es.upm.oeg.librairy.api.io.writer;
 
+import com.google.common.base.Strings;
+import es.upm.oeg.librairy.api.facade.model.avro.Credentials;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSink;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -29,7 +36,24 @@ public class SolrWriter implements Writer {
 
 
     public SolrWriter(DataSink dataSink) throws IOException {
-        this.solrClient     = new HttpSolrClient.Builder(dataSink.getUrl()).build();
+
+
+        HttpClientBuilder client = HttpClientBuilder.create();
+
+        Credentials credentials = dataSink.getCredentials();
+
+        if (credentials != null
+                && !Strings.isNullOrEmpty(credentials.getUser())
+                && !Strings.isNullOrEmpty(credentials.getPassword())){
+
+            CredentialsProvider provider = new BasicCredentialsProvider();
+            UsernamePasswordCredentials UserPwdCredentials = new UsernamePasswordCredentials(credentials.getUser(),credentials.getPassword());
+            provider.setCredentials(AuthScope.ANY, UserPwdCredentials);
+
+            client.setDefaultCredentialsProvider(provider);
+        }
+
+        this.solrClient     = new HttpSolrClient.Builder(dataSink.getUrl()).withHttpClient(client.build()).build();
         this.counter        = new AtomicInteger();
     }
 

@@ -1,9 +1,15 @@
 package es.upm.oeg.librairy.api.io.searcher;
 
 import com.google.common.base.Strings;
+import es.upm.oeg.librairy.api.facade.model.avro.Credentials;
 import es.upm.oeg.librairy.api.facade.model.avro.DataFields;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
 import es.upm.oeg.librairy.api.model.QueryDocument;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -49,7 +55,23 @@ public class SolrSearcher implements Searcher {
 
         this.filter         = Strings.isNullOrEmpty(dataSource.getFilter())? "*:*" : dataSource.getFilter();
 
-        this.solrClient     = new HttpSolrClient.Builder(dataSource.getUrl()).build();
+
+        HttpClientBuilder client = HttpClientBuilder.create();
+
+        Credentials credentials = dataSource.getCredentials();
+
+        if (credentials != null
+                && !Strings.isNullOrEmpty(credentials.getUser())
+                && !Strings.isNullOrEmpty(credentials.getPassword())){
+
+            CredentialsProvider provider = new BasicCredentialsProvider();
+            UsernamePasswordCredentials UserPwdCredentials = new UsernamePasswordCredentials(credentials.getUser(),credentials.getPassword());
+            provider.setCredentials(AuthScope.ANY, UserPwdCredentials);
+
+            client.setDefaultCredentialsProvider(provider);
+        }
+
+        this.solrClient     = new HttpSolrClient.Builder(dataSource.getUrl()).withHttpClient(client.build()).build();
 
     }
 

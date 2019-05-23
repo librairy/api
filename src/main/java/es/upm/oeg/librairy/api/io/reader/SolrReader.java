@@ -1,10 +1,16 @@
 package es.upm.oeg.librairy.api.io.reader;
 
 import com.google.common.base.Strings;
+import es.upm.oeg.librairy.api.facade.model.avro.Credentials;
 import es.upm.oeg.librairy.api.facade.model.avro.DataFields;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
 import es.upm.oeg.librairy.api.model.Document;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -64,7 +70,23 @@ public class SolrReader implements Reader {
         this.endpoint       = StringUtils.substringBeforeLast(dataSource.getUrl(),"/");
         this.collection     = StringUtils.substringAfterLast(dataSource.getUrl(),"/");
 
-        this.solrClient     = new HttpSolrClient.Builder(endpoint).build();
+
+        HttpClientBuilder client = HttpClientBuilder.create();
+
+        Credentials credentials = dataSource.getCredentials();
+
+        if (credentials != null
+                && !Strings.isNullOrEmpty(credentials.getUser())
+                && !Strings.isNullOrEmpty(credentials.getPassword())){
+
+            CredentialsProvider provider = new BasicCredentialsProvider();
+            UsernamePasswordCredentials UserPwdCredentials = new UsernamePasswordCredentials(credentials.getUser(),credentials.getPassword());
+            provider.setCredentials(AuthScope.ANY, UserPwdCredentials);
+
+            client.setDefaultCredentialsProvider(provider);
+        }
+
+        this.solrClient     = new HttpSolrClient.Builder(endpoint).withHttpClient(client.build()).build();
         this.counter        = 0;
 
         this.solrQuery = new SolrQuery();
