@@ -82,7 +82,7 @@ public class ItemService {
 
 
         final String refIdValue = refId;
-        List<Item> items = simDocs.stream().map(qd -> Item.newBuilder().setId(qd.getId()).setName(String.valueOf(qd.getData().get(nameField)).equalsIgnoreCase("null")?null:String.valueOf(qd.getData().get(nameField))).setScore(qd.getScore()).build()).filter(i -> !refIdValue.equalsIgnoreCase(i.getId())).collect(Collectors.toList());
+        List<Item> items = simDocs.stream().map(qd -> Item.newBuilder().setId(qd.getId()).setName(String.valueOf(qd.getData().get(nameField)).equalsIgnoreCase("null")?null:String.valueOf(qd.getData().get(nameField))).setScore(qd.getScore()).build()).filter(i -> !refIdValue.equalsIgnoreCase(i.getId())).limit(request.getSize()).collect(Collectors.toList());
 
         return items;
 
