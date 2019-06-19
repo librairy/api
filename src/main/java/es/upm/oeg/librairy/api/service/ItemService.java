@@ -48,6 +48,7 @@ public class ItemService {
         Map<String,Object> hash;
         int offset = 0;
         int max = request.getSize();
+        String refId = "";
         if (reference.getDocument() != null){
             // from existing repo
             List<QueryDocument> doc = searcher.getBy(
@@ -60,6 +61,7 @@ public class ItemService {
             if (doc.size()>1) throw new RuntimeException("More than one document by id: " + reference.getDocument().getId());
             hash = doc.get(0).getData();
             offset = 1;
+            refId = reference.getDocument().getId();
             max++;
         }else{
             // from inference
@@ -79,7 +81,8 @@ public class ItemService {
                 true);
 
 
-        List<Item> items = simDocs.stream().skip(offset).map(qd -> Item.newBuilder().setId(qd.getId()).setName(String.valueOf(qd.getData().get(nameField)).equalsIgnoreCase("null")?null:String.valueOf(qd.getData().get(nameField))).setScore(qd.getScore()).build()).collect(Collectors.toList());
+        final String refIdValue = refId;
+        List<Item> items = simDocs.stream().map(qd -> Item.newBuilder().setId(qd.getId()).setName(String.valueOf(qd.getData().get(nameField)).equalsIgnoreCase("null")?null:String.valueOf(qd.getData().get(nameField))).setScore(qd.getScore()).build()).filter(i -> !refIdValue.equalsIgnoreCase(i.getId())).collect(Collectors.toList());
 
         return items;
 
