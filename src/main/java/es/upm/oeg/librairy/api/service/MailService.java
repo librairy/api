@@ -136,7 +136,7 @@ public class MailService {
             Template t = velocityEngine.getTemplate("MailDocumentSuccess.vm");
 
             VelocityContext context = new VelocityContext();
-            context.put("out", request.getDataSink().getUrl());
+            context.put("out", request.getDataSink().getUrl()+"/select?q=*:*");
 
             StringWriter fw = new StringWriter();
             t.merge(context, fw);
@@ -155,8 +155,8 @@ public class MailService {
             Template t = velocityEngine.getTemplate("MailAnnotationSuccess.vm");
 
             VelocityContext context = new VelocityContext();
-            String filter = Strings.isNullOrEmpty(request.getDataSource().getFilter())? "" : request.getDataSource().getFilter();
-            context.put("source", request.getDataSource().getUrl() + "?" + URLEncoder.encode(filter, "UTF-8"));
+            String filter = Strings.isNullOrEmpty(request.getDataSource().getFilter())? "*:*" : request.getDataSource().getFilter();
+            context.put("source", request.getDataSource().getUrl() + "/select?q=" + URLEncoder.encode(filter, "UTF-8"));
             context.put("model", request.getModelEndpoint());
 
             StringWriter fw = new StringWriter();

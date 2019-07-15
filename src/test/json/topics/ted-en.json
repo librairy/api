@@ -1,8 +1,8 @@
 {
   "name": "ted-en-model",
-  "description": "Tenders Electronic Daily (TED) texts (EN) from the European Union generated in 2019",
-  "contactEmail": "cbadenes@fi.upm.es",
-  "version": "1.0",
+  "description": "Tenders Electronic Daily (TED) texts (EN) from the European Union",
+  "contactEmail": "cbadenes@gmail.com",
+  "version": "1.1",
   "annotate":false,
   "parameters": {
     "maxdocratio": "0.9",
@@ -14,17 +14,25 @@
     "beta":"0.01",
     "language": "en",
     "iterations":"1000",
-    "lowercase":true,
+    "lowercase":"true",
     "topwords":"10",
+    "autolabels":"false",
+    "autowords":"true",
     "stopwords":"",
     "stoplabels":""
+  },
+  "docker": {
+    "email": "cbadenes@gmail",
+    "password": "secret",
+    "repository": "librairy/ted-en-model",
+    "user": "cbadenes"
   },
   "dataSource": {
     "cache": false,
     "dataFields": {
       "id": "id",
       "labels": [
-        "labels_t"
+        "divisions_t"
       ],
       "text": [
         "name_s","txt_t"
