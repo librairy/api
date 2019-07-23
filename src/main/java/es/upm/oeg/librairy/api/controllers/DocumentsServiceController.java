@@ -25,7 +25,7 @@ import javax.annotation.PreDestroy;
 @RestController
 @ConditionalOnProperty(value="api.documents.enabled")
 @RequestMapping("/documents")
-@Api(tags="/documents", description = "save documents")
+@Api(tags="/documents", description = "move documents from external sources")
 public class DocumentsServiceController {
 
     private static final Logger LOG = LoggerFactory.getLogger(DocumentsServiceController.class);

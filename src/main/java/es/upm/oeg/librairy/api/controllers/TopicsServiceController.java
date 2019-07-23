@@ -25,7 +25,7 @@ import java.util.HashMap;
 @RestController
 @ConditionalOnProperty(value="api.topics.enabled")
 @RequestMapping("/topics")
-@Api(tags="/topics", description = "create topic models")
+@Api(tags="/topics", description = "create probabilistic topic models packaged as Restful APIs")
 public class TopicsServiceController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TopicsServiceController.class);

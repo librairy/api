@@ -25,7 +25,7 @@ import javax.annotation.PreDestroy;
 @RestController
 @ConditionalOnProperty(value="api.annotations.enabled")
 @RequestMapping("/annotations")
-@Api(tags="/annotations", description = "save topic distributions")
+@Api(tags="/annotations", description = "describe documents using concept hierarchies")
 public class AnnotationsServiceController {
 
     private static final Logger LOG = LoggerFactory.getLogger(AnnotationsServiceController.class);

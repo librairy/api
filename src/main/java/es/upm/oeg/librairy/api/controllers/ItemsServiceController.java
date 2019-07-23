@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @RestController
 @ConditionalOnProperty(value="api.items.enabled")
 @RequestMapping("/items")
-@Api(tags="/items", description = "document suggestions")
+@Api(tags="/items", description = "retrieve similar documents")
 public class ItemsServiceController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItemsServiceController.class);
