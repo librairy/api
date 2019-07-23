@@ -1,0 +1,44 @@
+{
+  "name": "jrc-it-model-unsupervised",
+  "description": "Collection of legislative texts (IT) from the European Union generated between years 1958 and 2006",
+  "contactEmail": "cbadenes@gmail.com",
+  "version": "2.500",
+  "annotate":false,
+  "parameters": {
+    "maxdocratio": "0.9",
+    "minfreq": "5",
+    "multigrams": "false",
+    "retries":"0",
+    "seed":"1066",
+    "alpha": "0.1",
+    "beta":"0.01",
+    "topics": "500",
+    "language": "it",
+    "iterations":"1000",
+    "lowercase":"true",
+    "topwords":"10",
+    "autolabels":"false",
+    "autowords":"true",
+    "stopwords":"",
+    "stoplabels":""
+  },
+  "docker": {
+    "email": "cbadenes@gmail",
+    "password": "secret",
+    "repository": "librairy/jrc-it-model-unsupervised",
+    "user": "cbadenes"
+  },
+  "dataSource": {
+    "cache": false,
+    "dataFields": {
+      "id": "id",
+      "labels": [],
+      "text": ["txt_t"]
+    },
+    "filter":"size_i:[100 TO *] && source_s:jrc && lang_s:it && root-labels_t:[* TO *]",
+    "format": "SOLR_CORE",
+    "offset": 0,
+    "size": 20000,
+    "url": "http://librairy.linkeddata.es/solr/jrc"
+  }
+}

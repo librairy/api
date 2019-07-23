@@ -11,7 +11,7 @@ http://www.w3.org/2001/XMLSchema-instance ">
 
 	<groupId>es.upm.oeg.librairy</groupId>
 	<artifactId>librairy-api</artifactId>
-	<version>1.5</version>
+	<version>1.6</version>
 	<packaging>jar</packaging>
 	<name>librairy-api</name>
 
@@ -45,6 +45,7 @@ http://www.w3.org/2001/XMLSchema-instance ">
 		<junit.version>4.12</junit.version>
 		<language-detector.version>0.6</language-detector.version>
 		<librairy.modeler.version>[1.0,)</librairy.modeler.version>
+		<librairy.swagger.version>[0.3,)</librairy.swagger.version>
 		<librairy.api.version>[1.0,)</librairy.api.version>
 		<logback.version>1.1.3</logback.version>
 		<mallet.version>2.0.8.2</mallet.version>
@@ -78,6 +79,13 @@ http://www.w3.org/2001/XMLSchema-instance ">
 				<groupId>org.librairy</groupId>
 				<artifactId>modeler-topics-service</artifactId>
 				<version>${librairy.modeler.version}</version>
+			</dependency>
+
+			<!-- librAIry Swagger -->
+			<dependency>
+				<groupId>org.librairy</groupId>
+				<artifactId>swagger</artifactId>
+				<version>${librairy.swagger.version}</version>
 			</dependency>
 
 			<!-- Mallet Dependency -->
@@ -204,6 +212,12 @@ http://www.w3.org/2001/XMLSchema-instance ">
 					<artifactId>servlet-api</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+
+		<!-- librAIry Swagger -->
+		<dependency>
+			<groupId>org.librairy</groupId>
+			<artifactId>swagger</artifactId>
 		</dependency>
 
 		<!-- Mallet Dependency -->

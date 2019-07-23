@@ -1,8 +1,8 @@
 {
-  "name": "jrc-fr-model",
-  "description": "Collection of legislative texts (FR) from the European Union generated between years 1958 and 2006",
+  "name": "jrc-it-model",
+  "description": "Collection of legislative texts (IT) from the European Union generated between years 1958 and 2006",
   "contactEmail": "cbadenes@fi.upm.es",
-  "version": "3.0",
+  "version": "1.3",
   "annotate":false,
   "parameters": {
     "maxdocratio": "0.9",
@@ -12,7 +12,7 @@
     "seed":"1066",
     "alpha": "0.1",
     "beta":"0.01",
-    "language": "fr",
+    "language": "it",
     "iterations":"1000",
     "lowercase":"true",
     "topwords":"10",
@@ -24,7 +24,7 @@
   "docker": {
     "email": "cbadenes@gmail",
     "password": "secret",
-    "repository": "librairy/jrc-fr-model",
+    "repository": "librairy/jrc-it-model",
     "user": "cbadenes"
   },
   "dataSource": {
@@ -38,7 +38,7 @@
         "txt_t"
       ]
     },
-    "filter":"size_i:[100 TO *] && source_s:jrc && lang_s:fr && root-labels_t:[* TO *]",
+    "filter":"size_i:[100 TO *] && source_s:jrc && lang_s:it && root-labels_t:[* TO *]",
     "format": "SOLR_CORE",
     "offset": 0,
     "size": 20000,
