@@ -11,7 +11,7 @@ http://www.w3.org/2001/XMLSchema-instance ">
 
 	<groupId>es.upm.oeg.librairy</groupId>
 	<artifactId>librairy-api</artifactId>
-	<version>1.6.2</version>
+	<version>2.0</version>
 	<packaging>jar</packaging>
 	<name>librairy-api</name>
 
@@ -226,15 +226,15 @@ http://www.w3.org/2001/XMLSchema-instance ">
 			<artifactId>mallet</artifactId>
 		</dependency>
 
-		<!--&lt;!&ndash; Apache Tika &ndash;&gt;-->
-		<!--<dependency>-->
-		<!--<groupId>org.apache.tika</groupId>-->
-		<!--<artifactId>tika-core</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-		<!--<groupId>org.apache.tika</groupId>-->
-		<!--<artifactId>tika-parsers</artifactId>-->
-		<!--</dependency>-->
+		<!-- Apache Tika -->
+		<dependency>
+		<groupId>org.apache.tika</groupId>
+		<artifactId>tika-core</artifactId>
+		</dependency>
+		<dependency>
+		<groupId>org.apache.tika</groupId>
+		<artifactId>tika-parsers</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>com.mashape.unirest</groupId>

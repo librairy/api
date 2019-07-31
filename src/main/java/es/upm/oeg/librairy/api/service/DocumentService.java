@@ -65,29 +65,15 @@ public class DocumentService {
                 final ConcurrentHashMap<String,Integer> errors = new ConcurrentHashMap<>();
                 while(( maxSize<0 || counter.get()<maxSize) &&  (doc = reader.next()).isPresent()){
                     final Document document = doc.get();
-                    if (Strings.isNullOrEmpty(document.getText())) continue;
+                    if (!document.isValid()) continue;
                     if (counter.incrementAndGet() % interval == 0) LOG.info(counter.get() + " documents indexed");
                     parallelExecutor.submit(() -> {
                         try {
-
-                            String id = document.getId();
-                            Map<String,Object> fields = new HashMap<>();
-
-                            fields.put("name_s", document.getName());
-                            String lang = languageService.getLanguage(document.getId());
-
-                            if (!document.getLabels().isEmpty()) fields.put("labels_t", document.getLabels().stream().collect(Collectors.joining(" ")));
-                            if (!Strings.isNullOrEmpty(document.getText())) {
-                                fields.put("txt_t",document.getText());
-                                fields.put("size_i",document.getText().length());
-                                lang = languageService.getLanguage(document.getText());
-                            }
-                            fields.put("lang_s",lang);
-                            fields.put("date_dt", date);
-                            fields.put("source_s",source);
-                            fields.put("format_s",document.getFormat());
-
-                            writer.save(id,fields);
+                            String lang = languageService.getLanguage(document.getText().substring(0,100));
+                            document.setSource(source);
+                            document.setDate(date);
+                            document.setLang(lang);
+                            writer.save(document);
                         } catch (Exception e) {
                             LOG.error("Unexpected error creating document",e);
                             errors.put(e.getClass().getName(),1);

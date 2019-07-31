@@ -1,5 +1,6 @@
 package es.upm.oeg.librairy.api.model;
 
+import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,14 @@ public class Document {
 
     private String format;
 
+    private String lang;
+
+    private String source;
+
+    private String date;
+
+    private String file;
+
     public Document() {
     }
 
@@ -40,6 +49,42 @@ public class Document {
         this.id = id;
         this.text = text;
         this.labels = labels;
+    }
+
+    public boolean isValid(){
+        return !Strings.isNullOrEmpty(id) && !Strings.isNullOrEmpty(text);
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public String getName() {
@@ -88,5 +133,19 @@ public class Document {
 
     public void setExtraData(Map<String, String> extraData) {
         this.extraData = extraData;
+    }
+
+    @Override
+    public String toString() {
+        return "Document{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", labels=" + labels +
+                ", format='" + format + '\'' +
+                ", lang='" + lang + '\'' +
+                ", source='" + source + '\'' +
+                ", date='" + date + '\'' +
+                ", file='" + file + '\'' +
+                '}';
     }
 }

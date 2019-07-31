@@ -3,6 +3,7 @@ package es.upm.oeg.librairy.api.io.writer;
 import com.google.common.base.Strings;
 import es.upm.oeg.librairy.api.facade.model.avro.Credentials;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSink;
+import es.upm.oeg.librairy.api.model.Document;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
@@ -88,6 +90,23 @@ public class SolrWriter implements Writer {
         }
         return saved;
 
+    }
+
+    @Override
+    public Boolean save(Document document) {
+        String id = document.getId();
+        Map<String,Object> fields = new HashMap<>();
+        if (!document.getLabels().isEmpty()) fields.put("labels_t", document.getLabels().stream().collect(Collectors.joining(" ")));
+        fields.put("name_t", document.getName());
+        fields.put("txt_t",document.getText());
+        fields.put("size_i",document.getText().length());
+        fields.put("lang_s",document.getLang());
+        fields.put("date_dt", document.getDate());
+        fields.put("source_s",document.getSource());
+        fields.put("format_s",document.getFormat());
+
+        save(id, fields);
+        return true;
     }
 
     @Override

@@ -26,9 +26,12 @@ public class ParallelExecutor {
 
     ExecutorService pool;
 
+    Integer size;
+
     public ParallelExecutor(){
         int cpus = Runtime.getRuntime().availableProcessors();
         int maxThreads = (cpus > 1)? cpus-1 : cpus;
+        size = maxThreads;
         pool = new ThreadPoolExecutor(
                 maxThreads, // core thread pool size
                 maxThreads, // maximum thread pool size
@@ -39,6 +42,7 @@ public class ParallelExecutor {
     }
 
     public ParallelExecutor(int size){
+        this.size  = size;
         pool = new ThreadPoolExecutor(
                 size, // core thread pool size
                 size, // maximum thread pool size
@@ -91,5 +95,7 @@ public class ParallelExecutor {
         }
     }
 
-
+    public Integer getSize() {
+        return size;
+    }
 }
