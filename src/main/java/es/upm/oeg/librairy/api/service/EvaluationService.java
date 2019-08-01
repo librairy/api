@@ -41,6 +41,11 @@ public class EvaluationService {
     @Autowired
     AnnotationService annotationService;
 
+    @Autowired
+    WriterFactory writerFactory;
+
+    @Autowired
+    ReaderFactory readerFactory;
 
     public void create(DataSource dataSource, DataSink dataSink,String model, Integer refSize, List<Integer> intervals, Boolean annotate){
 
@@ -48,7 +53,7 @@ public class EvaluationService {
 
             if (dataSource.getDataFields().getLabels() == null || dataSource.getDataFields().getLabels().isEmpty()) throw new RuntimeException("Labels field is emtpy");
 
-            Writer writer       = WriterFactory.newFrom(dataSink);
+            Writer writer       = writerFactory.newFrom(dataSink);
 
             // Annotate
             if (annotate){
@@ -82,7 +87,7 @@ public class EvaluationService {
                     .setUrl(dataSink.getUrl())
                     .build();
 
-            Reader reader       = ReaderFactory.newFrom(outputSource);
+            Reader reader       = readerFactory.newFrom(outputSource);
 
             Map<String,Evaluation> simResults   = new ConcurrentHashMap<>();
             Map<String,Evaluation> t0Results    = new ConcurrentHashMap<>();

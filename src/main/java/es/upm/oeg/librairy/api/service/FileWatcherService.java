@@ -1,6 +1,10 @@
 package es.upm.oeg.librairy.api.service;
 
 import es.upm.oeg.librairy.api.executors.ParallelExecutor;
+import es.upm.oeg.librairy.api.facade.model.avro.DataFields;
+import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
+import es.upm.oeg.librairy.api.facade.model.avro.ReaderFormat;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +15,7 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Arrays;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
@@ -25,6 +30,40 @@ public class FileWatcherService {
 
     @Value("#{environment['INPUT_FOLDER']?:'${input.folder}'}")
     String resourceFolder;
+
+    @Value("#{environment['INPUT_SOURCE']?:'${input.source}'}")
+    String source;
+
+    @Value("#{environment['INPUT_CSV_SEPARATOR']?:'${input.csv.separator}'}")
+    String csvSeparator;
+
+    @Value("#{environment['INPUT_CSV_OFFSET']?:'${input.csv.offset}'}")
+    String csvOffset;
+
+    @Value("#{environment['INPUT_CSV_ID']?:'${input.csv.id}'}")
+    String csvId;
+
+    @Value("#{environment['INPUT_CSV_NAME']?:'${input.csv.name}'}")
+    String csvName;
+
+    @Value("#{environment['INPUT_CSV_TEXT']?:'${input.csv.text}'}")
+    String csvText;
+
+    @Value("#{environment['INPUT_CSV_LABELS']?:'${input.csv.labels}'}")
+    String csvLabels;
+
+    @Value("#{environment['INPUT_JSONL_ID']?:'${input.jsonl.id}'}")
+    String jsonlId;
+
+    @Value("#{environment['INPUT_JSONL_NAME']?:'${input.jsonl.name}'}")
+    String jsonlName;
+
+    @Value("#{environment['INPUT_JSONL_TEXT']?:'${input.jsonl.text}'}")
+    String jsonlText;
+
+    @Value("#{environment['INPUT_JSONL_LABELS']?:'${input.jsonl.labels}'}")
+    String jsonlLabels;
+
 
     @Autowired
     IndexerService indexerService;
@@ -50,8 +89,6 @@ public class FileWatcherService {
         } catch (IOException x) {
             System.err.println(x);
         }
-
-        final ParallelExecutor executor = new ParallelExecutor();
 
         new Thread(() -> {
             LOG.info("Listening at: " + dir.toFile().getAbsolutePath());
@@ -83,13 +120,41 @@ public class FileWatcherService {
                     WatchEvent<Path> ev = (WatchEvent<Path>)event;
                     final Path filename = ev.context();
 
-                    executor.submit(() -> {
-                        try{
-                            indexerService.index(dir.resolve(filename));
-                        }catch (Exception e){
-                            LOG.error("Unexpected error parsing file: " + filename,e);
+                    try{
+
+                        DataSource dataSource = new DataSource();
+                        String path = dir.resolve(filename).toString();
+                        dataSource.setUrl(path);
+                        dataSource.setName(source);
+                        if (path.toLowerCase().endsWith(".pdf")) {
+                            dataSource.setFormat(ReaderFormat.PDF);
+                        }else if(path.toLowerCase().endsWith(".doc")){
+                                dataSource.setFormat(ReaderFormat.DOC);
+                        }else if(path.toLowerCase().endsWith(".txt")){
+                            dataSource.setFormat(ReaderFormat.TXT);
+                        }else if(path.toLowerCase().endsWith(".csv.gz") || path.toLowerCase().endsWith(".tsv.gz")){
+                            dataSource.setFormat(ReaderFormat.CSV_TAR_GZ);
+                            dataSource.setOffset(Long.valueOf(csvOffset));
+                            dataSource.setFilter(csvSeparator);
+                            dataSource.setDataFields(DataFields.newBuilder().setId(csvId).setName(csvName).setText(Arrays.asList(csvText)).setLabels(Arrays.asList(csvLabels)).build());
+                        }else if(path.toLowerCase().endsWith(".csv") || path.toLowerCase().endsWith(".tsv")){
+                            dataSource.setFormat(ReaderFormat.CSV);
+                            dataSource.setOffset(Long.valueOf(csvOffset));
+                            dataSource.setFilter(csvSeparator);
+                            dataSource.setDataFields(DataFields.newBuilder().setId(csvId).setName(csvName).setText(Arrays.asList(csvText)).setLabels(Arrays.asList(csvLabels)).build());
+                        }else if(path.toLowerCase().endsWith(".jsonl.gz")){
+                            dataSource.setFormat(ReaderFormat.JSONL_TAR_GZ);
+                            dataSource.setDataFields(DataFields.newBuilder().setId(jsonlId).setName(jsonlName).setText(Arrays.asList(jsonlText)).setLabels(Arrays.asList(jsonlLabels)).build());
+                        }else if(path.toLowerCase().endsWith(".jsonl")){
+                            dataSource.setFormat(ReaderFormat.JSONL);
+                            dataSource.setDataFields(DataFields.newBuilder().setId(jsonlId).setName(jsonlName).setText(Arrays.asList(jsonlText)).setLabels(Arrays.asList(jsonlLabels)).build());
                         }
-                    });
+
+                        indexerService.index(dataSource);
+                    }catch (Exception e){
+                        LOG.error("Unexpected error parsing file: " + filename,e);
+                    }
+
 
 //                        // Verify that the new
 //                        //  file is a text file.

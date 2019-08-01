@@ -36,6 +36,8 @@ public class LanguageService {
     private LanguageDetector languageDetector;
     private TextObjectFactory textObjectFactory;
 
+    private List<String> availableLangs = Arrays.asList(new String[]{"en","es","fr","de","it"});
+
     @PostConstruct
     public void setup() throws IOException {
         //load all languages:
@@ -45,7 +47,6 @@ public class LanguageService {
 
         Iterator it = BuiltInLanguages.getLanguages().iterator();
 
-        List<String> availableLangs = Arrays.asList(new String[]{"en","es","fr","de","pt","it"});
         while(it.hasNext()) {
             LdLocale locale = (LdLocale)it.next();
             if (availableLangs.contains(locale.getLanguage())) {
@@ -77,4 +78,8 @@ public class LanguageService {
         return language;
     }
 
+
+    public List<String> getAvailableLangs() {
+        return availableLangs;
+    }
 }

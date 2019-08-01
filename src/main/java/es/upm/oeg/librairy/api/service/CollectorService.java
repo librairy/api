@@ -34,6 +34,9 @@ public class CollectorService {
     @Autowired
     MailService mailService;
 
+    @Autowired
+    ReaderFactory readerFactory;
+
     public boolean collect(CorpusBuilder corpusBuilder, TopicsRequest request) {
 
         try{
@@ -46,7 +49,7 @@ public class CollectorService {
 
             LOG.info("Building bag-of-words with "+ (multigrams? "multigrams" : "unigrams") + " from: "  + datasource);
 
-            Reader reader = ReaderFactory.newFrom(datasource);
+            Reader reader = readerFactory.newFrom(datasource);
 
             Long maxSize = datasource.getSize();
             AtomicInteger counter = new AtomicInteger();

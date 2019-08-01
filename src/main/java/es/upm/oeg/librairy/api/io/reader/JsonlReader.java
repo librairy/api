@@ -1,7 +1,9 @@
 package es.upm.oeg.librairy.api.io.reader;
 
+import es.upm.oeg.librairy.api.builders.DateBuilder;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
 import es.upm.oeg.librairy.api.model.QueryDocument;
+import es.upm.oeg.librairy.api.service.LanguageService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import es.upm.oeg.librairy.api.model.Document;
@@ -21,13 +23,19 @@ public class  JsonlReader extends FileReader{
     private static final Logger LOG = LoggerFactory.getLogger(JsonlReader.class);
     private final Map<String, List<String>> map;
     private final String path;
+    private final LanguageService languageService;
+    private final String file;
+    private final String source;
 
     private BufferedReader reader;
 
-    public JsonlReader(DataSource dataSource, Boolean zip) throws IOException {
+    public JsonlReader(DataSource dataSource, Boolean zip, LanguageService languageService) throws IOException {
         this.path           = "inputStream";
         this.reader         = new BufferedReader(getInputStream(dataSource.getUrl(), zip));
         this.map            = getParameters(dataSource);
+        this.languageService = languageService;
+        this.file           = dataSource.getUrl();
+        this.source         = dataSource.getName();
     }
 
 
@@ -41,6 +49,8 @@ public class  JsonlReader extends FileReader{
             }
             Document document = new Document();
 
+            document.setSource(source);
+            document.setFile(file);
             JSONObject jsonObject = new JSONObject(line);
 
             if (map.containsKey("id")) {
@@ -51,6 +61,8 @@ public class  JsonlReader extends FileReader{
             }
             if (map.containsKey("text"))    {
                 document.setText(retrieve(jsonObject, map.get("text"), true));
+                String lang = languageService.getLanguage(document.getText().substring(0, Math.min(100, document.getText().length())));
+                document.setLang(lang);
             }
             if (map.containsKey("labels")){
                 document.setLabels(Arrays.asList(retrieve(jsonObject, map.get("labels"), false).split(" ")));
@@ -65,6 +77,7 @@ public class  JsonlReader extends FileReader{
                 document.setExtraData(extraData);
             }
             document.setFormat("json");
+            document.setDate(DateBuilder.now());
             return Optional.of(document);
 
         }catch (Exception e){

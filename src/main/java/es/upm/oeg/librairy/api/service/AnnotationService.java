@@ -1,7 +1,6 @@
 package es.upm.oeg.librairy.api.service;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 import es.upm.oeg.librairy.api.builders.HashTopicBuilder;
 import es.upm.oeg.librairy.api.executors.ParallelExecutor;
 import es.upm.oeg.librairy.api.facade.model.avro.AnnotationsRequest;
@@ -36,16 +35,21 @@ public class AnnotationService {
     @Autowired
     InferenceService inferenceService;
 
+    @Autowired
+    ReaderFactory readerFactory;
+
+    @Autowired
+    WriterFactory writerFactory;
 
     public void create(AnnotationsRequest annotationRequest){
 
         try{
 
             DataSource dataSource = annotationRequest.getDataSource();
-            Reader reader = ReaderFactory.newFrom(dataSource);
+            Reader reader = readerFactory.newFrom(dataSource);
 
             DataSink dataSink = annotationRequest.getDataSink();
-            Writer writer = WriterFactory.newFrom(dataSink);
+            Writer writer = writerFactory.newFrom(dataSink);
 
             Long maxSize = dataSource.getSize();
             AtomicInteger counter = new AtomicInteger();
@@ -62,7 +66,7 @@ public class AnnotationService {
                         String id   = document.getId();
                         String txt  = document.getText().toLowerCase();
 
-                        Map<Integer, List<String>> topicsMap = inferenceService.getTopicsByRelevance(txt, annotationRequest.getModelEndpoint());
+                        Map<Integer, List<String>> topicsMap = inferenceService.getTopicNamesByRelevance(txt, annotationRequest.getModelEndpoint());
 
                         Map<String,Object> data = HashTopicBuilder.from(topicsMap);
 

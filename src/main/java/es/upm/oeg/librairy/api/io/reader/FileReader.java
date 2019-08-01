@@ -43,6 +43,7 @@ public abstract class FileReader implements Reader{
         Map<String,List<String>> parsingMap = new HashMap<>();
         parsingMap.put("id", Arrays.asList(dataFields.getId()));
         parsingMap.put("text", dataFields.getText());
+        parsingMap.put("name", Arrays.asList(dataFields.getName()));
         if ((dataFields.getLabels() != null) && !dataFields.getLabels().isEmpty()) parsingMap.put("labels", dataFields.getLabels());
         return parsingMap;
     }

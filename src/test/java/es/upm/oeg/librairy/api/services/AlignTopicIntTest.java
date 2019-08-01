@@ -38,7 +38,7 @@ public class AlignTopicIntTest {
                 .setUrl("http://librairy.linkeddata.es/solr/jrc")
                 .build()
                 ;
-        Reader reader = ReaderFactory.newFrom(datasource);
+        Reader reader = new ReaderFactory().newFrom(datasource);
 
         Optional<Document> res = Optional.empty();
         Set<String> labels = new TreeSet<>();

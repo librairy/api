@@ -140,12 +140,13 @@ public class Document {
         return "Document{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
+                ", file='" + file + '\'' +
                 ", labels=" + labels +
                 ", format='" + format + '\'' +
                 ", lang='" + lang + '\'' +
                 ", source='" + source + '\'' +
                 ", date='" + date + '\'' +
-                ", file='" + file + '\'' +
+                ", extraData=" + extraData +
                 '}';
     }
 }

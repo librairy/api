@@ -98,6 +98,7 @@ public class SolrWriter implements Writer {
         Map<String,Object> fields = new HashMap<>();
         if (!document.getLabels().isEmpty()) fields.put("labels_t", document.getLabels().stream().collect(Collectors.joining(" ")));
         fields.put("name_t", document.getName());
+        fields.put("file_s", document.getFile());
         fields.put("txt_t",document.getText());
         fields.put("size_i",document.getText().length());
         fields.put("lang_s",document.getLang());
@@ -105,6 +106,9 @@ public class SolrWriter implements Writer {
         fields.put("source_s",document.getSource());
         fields.put("format_s",document.getFormat());
 
+        if (!document.getExtraData().isEmpty()){
+            document.getExtraData().entrySet().forEach(entry -> fields.put(entry.getKey(),Strings.isNullOrEmpty(entry.getValue())? "" : entry.getValue()));
+        }
         save(id, fields);
         return true;
     }
@@ -125,8 +129,7 @@ public class SolrWriter implements Writer {
             LOG.info("[" + counter.incrementAndGet() + "] Document '" + id + "' saved");
 
             if (counter.get() % 100 == 0){
-                LOG.debug("Committing partial annotations["+ this.counter.get() +"]");
-                solrClient.commit();
+                commit();
             }
 
             saved = true;
@@ -135,6 +138,15 @@ public class SolrWriter implements Writer {
         }
         return saved;
 
+    }
+
+    public void commit(){
+        LOG.debug("Committing partial annotations["+ this.counter.get() +"]");
+        try {
+            solrClient.commit();
+        }catch (Exception e){
+            LOG.error("Unexpected error ", e);
+        }
     }
 
     @Override

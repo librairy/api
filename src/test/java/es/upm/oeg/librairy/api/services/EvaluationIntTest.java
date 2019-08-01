@@ -2,7 +2,6 @@ package es.upm.oeg.librairy.api.services;
 
 
 import es.upm.oeg.librairy.api.Application;
-import es.upm.oeg.librairy.api.facade.AvroClient;
 import es.upm.oeg.librairy.api.facade.model.avro.*;
 import es.upm.oeg.librairy.api.io.writer.Writer;
 import es.upm.oeg.librairy.api.io.writer.WriterFactory;
@@ -85,8 +84,9 @@ public class EvaluationIntTest {
                 .setUrl("http://librairy.linkeddata.es/solr/test1")
                 .build();
 
-        Writer writer       = WriterFactory.newFrom(dataSink);
+        Writer writer       = new WriterFactory().newFrom(dataSink);
 //        writer.reset();
+
 
 
 //        int size = 0;

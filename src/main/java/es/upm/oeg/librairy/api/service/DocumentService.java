@@ -40,17 +40,21 @@ public class DocumentService {
     @Autowired
     LanguageService languageService;
 
+    @Autowired
+    ReaderFactory readerFactory;
 
+    @Autowired
+    WriterFactory writerFactory;
 
     public boolean create(DocumentsRequest request){
         try{
             LOG.info("Ready to create documents from: " + request);
             try{
                 DataSource datasource = request.getDataSource();
-                Reader reader = ReaderFactory.newFrom(datasource);
+                Reader reader = readerFactory.newFrom(datasource);
 
                 DataSink dataSink = request.getDataSink();
-                Writer writer = WriterFactory.newFrom(dataSink);
+                Writer writer = writerFactory.newFrom(dataSink);
 
                 Long maxSize = datasource.getSize();
                 AtomicInteger counter = new AtomicInteger();
@@ -69,7 +73,7 @@ public class DocumentService {
                     if (counter.incrementAndGet() % interval == 0) LOG.info(counter.get() + " documents indexed");
                     parallelExecutor.submit(() -> {
                         try {
-                            String lang = languageService.getLanguage(document.getText().substring(0,100));
+                            String lang = languageService.getLanguage(document.getText().substring(0,Math.min(100, document.getText().length())));
                             document.setSource(source);
                             document.setDate(date);
                             document.setLang(lang);

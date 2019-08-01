@@ -10,18 +10,19 @@ import es.upm.oeg.librairy.api.io.reader.Reader;
 import es.upm.oeg.librairy.api.io.reader.SolrReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
  */
-
+@Component
 public class WriterFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(WriterFactory.class);
 
-    public static Writer newFrom(DataSink dataSink) throws IOException {
+    public Writer newFrom(DataSink dataSink) throws IOException {
 
         WriterFormat format = dataSink.getFormat();
 

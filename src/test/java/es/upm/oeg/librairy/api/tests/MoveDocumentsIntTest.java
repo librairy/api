@@ -9,14 +9,10 @@ import es.upm.oeg.librairy.api.io.writer.Writer;
 import es.upm.oeg.librairy.api.io.writer.WriterFactory;
 import es.upm.oeg.librairy.api.model.Document;
 import es.upm.oeg.librairy.api.service.InferenceService;
-import es.upm.oeg.librairy.api.utils.WriterUtils;
-import es.upm.oeg.librairy.service.modeler.facade.rest.model.Topic;
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -60,10 +56,11 @@ public class MoveDocumentsIntTest {
                 .setUrl("http://librairy.linkeddata.es/solr/tbfy")
                 .build();
 
-        Reader reader       = ReaderFactory.newFrom(fromSource);
+
+        Reader reader       = new ReaderFactory().newFrom(fromSource);
         Optional<Document> doc = Optional.empty();
 
-        Writer writer       = WriterFactory.newFrom(dataSink);
+        Writer writer       = new WriterFactory().newFrom(dataSink);
 
         InferenceService inferenceService = new InferenceService();
 
@@ -85,7 +82,7 @@ public class MoveDocumentsIntTest {
 
                     if (Integer.valueOf((String) data.get("size_i")) !=0){
                         LOG.info("[" + counter.incrementAndGet()+"] getting topics from : " + document.getId());
-                        Map<Integer, List<String>> topics = inferenceService.getTopicsByRelevance(document.getText(), model);
+                        Map<Integer, List<String>> topics = inferenceService.getTopicNamesByRelevance(document.getText(), model);
                         topics.entrySet().forEach(entry  -> data.put("topics"+entry.getKey()+"_t", entry.getValue().stream().sorted().collect(Collectors.joining(" "))));
                     }
 
@@ -132,10 +129,10 @@ public class MoveDocumentsIntTest {
                 .setUrl("http://librairy.linkeddata.es/solr/eurovoc")
                 .build();
 
-        Reader reader       = ReaderFactory.newFrom(fromSource);
+        Reader reader       = new ReaderFactory().newFrom(fromSource);
         Optional<Document> doc = Optional.empty();
 
-        Writer writer       = WriterFactory.newFrom(dataSink);
+        Writer writer       = new WriterFactory().newFrom(dataSink);
 
         InferenceService inferenceService = new InferenceService();
 

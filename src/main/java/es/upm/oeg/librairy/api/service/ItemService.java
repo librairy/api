@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import es.upm.oeg.librairy.api.builders.HashTopicBuilder;
 import es.upm.oeg.librairy.api.facade.model.avro.*;
+import es.upm.oeg.librairy.api.io.reader.ReaderFactory;
 import es.upm.oeg.librairy.api.io.searcher.Searcher;
 import es.upm.oeg.librairy.api.io.searcher.SearcherFactory;
 import es.upm.oeg.librairy.api.model.QueryDocument;
@@ -29,6 +30,9 @@ public class ItemService {
     @Autowired
     InferenceService inferenceService;
 
+    @Autowired
+    SearcherFactory searcherFactory;
+
 
     public List<Item> getItemsByHash(ItemsRequest request) throws IOException, UnirestException {
 
@@ -36,7 +40,7 @@ public class ItemService {
 
         DataSource dataSource   = request.getDataSource();
 
-        Searcher searcher       = SearcherFactory.newFrom(dataSource);
+        Searcher searcher       = searcherFactory.newFrom(dataSource);
 
         Reference reference     = request.getReference();
 
@@ -66,7 +70,7 @@ public class ItemService {
         }else{
             // from inference
             TextReference textReference = reference.getText();
-            Map<Integer, List<String>> topicsMap = inferenceService.getTopicsByRelevance(textReference.getContent(), textReference.getModel());
+            Map<Integer, List<String>> topicsMap = inferenceService.getTopicNamesByRelevance(textReference.getContent(), textReference.getModel());
             hash = HashTopicBuilder.from(topicsMap);
         }
 
@@ -94,7 +98,7 @@ public class ItemService {
 
         DataSource dataSource   = request.getDataSource();
 
-        Searcher searcher       = SearcherFactory.newFrom(dataSource);
+        Searcher searcher       = searcherFactory.newFrom(dataSource);
 
         if (request.getReference().getDocument() == null || Strings.isNullOrEmpty(request.getReference().getDocument().getId())) throw new RuntimeException("Document ID is empty");
 

@@ -4,18 +4,19 @@ import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
 import es.upm.oeg.librairy.api.facade.model.avro.ReaderFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
  */
-
+@Component
 public class SearcherFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(SearcherFactory.class);
 
-    public static Searcher newFrom(DataSource dataSource) throws IOException {
+    public Searcher newFrom(DataSource dataSource) throws IOException {
 
         ReaderFormat format = dataSource.getFormat();
 
