@@ -12,8 +12,6 @@ import es.upm.oeg.librairy.api.io.reader.Reader;
 import es.upm.oeg.librairy.api.io.reader.ReaderFactory;
 import es.upm.oeg.librairy.api.io.writer.SolrWriter;
 import es.upm.oeg.librairy.api.model.Document;
-import es.upm.oeg.librairy.api.parser.FileParser;
-import es.upm.oeg.librairy.api.parser.ParserFactory;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +32,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class IndexerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(IndexerService.class);
-
-    @Autowired
-    ParserFactory parserFactory;
 
     @Value("#{environment['STORAGE_URL']?:'${storage.url}'}")
     String endpoint;

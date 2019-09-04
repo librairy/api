@@ -151,7 +151,7 @@ public class EvaluationService {
                     }
                 });
             }
-            parallelExecutor.awaitTermination(1, TimeUnit.HOURS);
+            parallelExecutor.awaitTermination(1, TimeUnit.MINUTES);
             writer.close();
 
             LOG.info(simResults.size() + " evaluations completed");

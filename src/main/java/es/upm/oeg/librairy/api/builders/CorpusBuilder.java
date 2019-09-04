@@ -140,8 +140,10 @@ public class CorpusBuilder {
     }
 
     public void close() {
-        while(pendingDocs.get() > 0){
-            LOG.info("waiting for adding "+pendingDocs.get()+" pending docs to close it... ");
+        int maxRetries = 10;
+        AtomicInteger retries = new AtomicInteger(0);
+        while(pendingDocs.get() != 0 && (retries.incrementAndGet()<=maxRetries)){
+            LOG.info("["+retries.get()+"] waiting for adding "+pendingDocs.get()+" pending docs to close it... ");
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
@@ -149,7 +151,10 @@ public class CorpusBuilder {
             }
         }
 
-        if (pendingDocs.get() >0) LOG.info("Pending docs: " + pendingDocs.get());
+        if (pendingDocs.get() != 0) {
+            LOG.info("Pending docs: " + pendingDocs.get());
+            pendingDocs.set(0);
+        }
 
         setClosed(true);
         if (writer != null){

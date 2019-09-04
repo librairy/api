@@ -72,7 +72,7 @@ public class CollectorService {
                     }
                 });
             }
-            parallelExecutor.awaitTermination(1, TimeUnit.HOURS);
+            parallelExecutor.awaitTermination(5, TimeUnit.MINUTES);
 //            mailService.notifyModelCreation(request, "Datasource analyzed. Ready to create a new topic model.");
             return true;
         }catch (Exception e){

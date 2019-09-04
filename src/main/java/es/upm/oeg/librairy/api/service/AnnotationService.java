@@ -84,7 +84,7 @@ public class AnnotationService {
                     }
                 });
             }
-            parallelExecutor.awaitTermination(1, TimeUnit.HOURS);
+            parallelExecutor.awaitTermination(5, TimeUnit.MINUTES);
             writer.close();
 
             mailService.notifyAnnotation(annotationRequest,"Annotation completed");

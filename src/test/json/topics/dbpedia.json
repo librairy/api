@@ -2,7 +2,7 @@
   "name": "dbpedia-model",
   "description": "Created from the DBpedia ontology classification dataset by picking 14 non-overlapping classes from DBpedia 2014",
   "contactEmail": "cbadenes@fi.upm.es",
-  "version": "1.0",
+  "version": "1.1",
   "annotate":false,
   "parameters": {
     "maxdocratio": "0.9",
@@ -13,7 +13,18 @@
     "alpha": "0.1",
     "beta":"0.01",
     "iterations":"1000",
-    "stopwords":"bear"
+    "lowercase":"true",
+    "topwords":"10",
+    "autolabels":"true",
+    "autowords":"true",
+    "stopwords":"",
+    "stoplabels":""
+  },
+  "docker": {
+    "email": "cbadenes@gmail",
+    "password": "secret",
+    "repository": "librairy/dbpedia-model",
+    "user": "cbadenes"
   },
   "dataSource": {
     "cache": false,

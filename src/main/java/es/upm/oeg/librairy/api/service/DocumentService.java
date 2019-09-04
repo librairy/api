@@ -84,7 +84,7 @@ public class DocumentService {
                         }
                     });
                 }
-                parallelExecutor.awaitTermination(1, TimeUnit.HOURS);
+                parallelExecutor.awaitTermination(5, TimeUnit.MINUTES);
                 writer.close();
                 if (errors.isEmpty()) mailService.notifyDocumentCreation(request, "Documents created");
                 else mailService.notifyDocumentError(request, "Documents cannot be created");
