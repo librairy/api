@@ -21,7 +21,7 @@
     "stoplabels":""
   },
   "docker": {
-    "email": "cbadenes@gmail",
+    "email": "cbadenes@gmail.com",
     "password": "secret",
     "repository": "librairy/dbpedia-model",
     "user": "cbadenes"
