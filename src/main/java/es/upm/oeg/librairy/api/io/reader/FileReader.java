@@ -1,5 +1,6 @@
 package es.upm.oeg.librairy.api.io.reader;
 
+import com.google.common.base.Strings;
 import es.upm.oeg.librairy.api.facade.model.avro.DataFields;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
 import org.slf4j.Logger;
@@ -43,7 +44,8 @@ public abstract class FileReader implements Reader{
         Map<String,List<String>> parsingMap = new HashMap<>();
         parsingMap.put("id", Arrays.asList(dataFields.getId()));
         parsingMap.put("text", dataFields.getText());
-        parsingMap.put("name", Arrays.asList(dataFields.getName()));
+        String nameValue = Strings.isNullOrEmpty(dataFields.getName()) ? dataFields.getId() : dataFields.getName();
+        parsingMap.put("name", Arrays.asList(nameValue));
         if ((dataFields.getLabels() != null) && !dataFields.getLabels().isEmpty()) parsingMap.put("labels", dataFields.getLabels());
         return parsingMap;
     }

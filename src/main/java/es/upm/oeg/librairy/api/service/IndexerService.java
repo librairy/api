@@ -114,7 +114,7 @@ public class IndexerService {
     }
 
     private void getTopicsFromModel(String model){
-        LOG.info("Loading model: " + model + " ...");
+        LOG.info("Loading inference model: " + model + " ...");
         Map<String, String> topicConcepts = inferenceService.getTopics(model);
         modelSynsets.put(model,topicConcepts);
         if (!topicConcepts.isEmpty()) LOG.info("Model '" + model + "' ready!");

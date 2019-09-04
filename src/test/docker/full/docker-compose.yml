@@ -8,6 +8,7 @@ services:
     environment:
       - JAVA_OPTS=-Xmx32248m
       - REST_PATH=/nlp
+      - REST_PORT=80
   librairy-api:
     image: librairy/api:latest
     ports:

@@ -178,6 +178,9 @@ public class InferenceService {
 
             List<Annotation> annotations = new ArrayList<>();
             String endpoint = nlpEndpoint+"/annotations";
+            if (!endpoint.toLowerCase().startsWith("http")){
+                endpoint = "http://"+endpoint;
+            }
             HttpResponse<JsonNode> result = Unirest.post(endpoint)
                     .body(request)
                     .asJson();
