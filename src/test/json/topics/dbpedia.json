@@ -15,7 +15,7 @@
     "iterations":"1000",
     "lowercase":"true",
     "topwords":"10",
-    "autolabels":"true",
+    "autolabels":"false",
     "autowords":"true",
     "stopwords":"",
     "stoplabels":""

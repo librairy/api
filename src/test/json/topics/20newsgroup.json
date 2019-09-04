@@ -2,7 +2,7 @@
   "name": "20newsgroup-model",
   "description": "topic model created from 20newsgroup dataset",
   "contactEmail": "cbadenes@fi.upm.es",
-  "version": "1.0",
+  "version": "1.1",
   "annotate":false,
   "parameters": {
     "maxdocratio": "0.9",
@@ -13,7 +13,18 @@
     "alpha": "0.1",
     "beta":"0.01",
     "iterations":"1000",
-    "stopwords":"write article say make thing year time"
+    "stopwords":"write article say make thing year time",
+    "lowercase":"true",
+    "topwords":"10",
+    "autolabels":"false",
+    "autowords":"true",
+    "stoplabels":""
+  },
+  "docker": {
+    "email": "cbadenes@gmail.com",
+    "password": "secret",
+    "repository": "librairy/20newsgroup-model",
+    "user": "cbadenes"
   },
   "dataSource": {
     "cache": false,
