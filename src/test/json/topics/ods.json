@@ -1,0 +1,46 @@
+{
+  "name": "ods-model",
+  "description": "Creado a partir de noticias anotadas con los Objetivos de Desarrollo Sostenible (ODS) ",
+  "contactEmail": "cbadenes@fi.upm.es",
+  "version": "1.0",
+  "annotate":false,
+  "parameters": {
+    "maxdocratio": "0.9",
+    "minfreq": "5",
+    "multigrams": "false",
+    "retries":"0",
+    "seed":"1066",
+    "alpha": "0.1",
+    "beta":"0.01",
+    "iterations":"1000",
+    "lowercase":"true",
+    "topwords":"10",
+    "autolabels":"false",
+    "autowords":"true",
+    "stopwords":"objetivo informe",
+    "stoplabels":""
+  },
+  "docker": {
+    "email": "cbadenes@gmail.com",
+    "password": "secret",
+    "repository": "librairy/ods-model",
+    "user": "cbadenes"
+  },
+  "dataSource": {
+    "cache": false,
+    "dataFields": {
+      "id": "0",
+      "labels": [
+        "1"
+      ],
+      "text": [
+        "2"
+      ]
+    },
+    "filter":";;",
+    "format": "CSV",
+    "offset": 0,
+    "size": -1,
+    "url": "https://raw.githubusercontent.com/AlbertoSR/sdg-text-retriever/master/ods_texts.csv"
+  }
+}

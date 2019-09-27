@@ -53,7 +53,10 @@ public class LDALauncher {
     @Autowired
     StopwordService stopwordService;
 
-    public void train(ModelParams parameters, String email) throws IOException {
+    public Double train(ModelParams parameters, String email) throws IOException {
+
+
+        Double result = -100.0; //log-likelihood
 
         File outputDirFile = Paths.get(parameters.getOutputDir()).toFile();
         if (!outputDirFile.exists()) {
@@ -77,7 +80,7 @@ public class LDALauncher {
 
                     TopicReport report = build(parameters);
 
-                    if (report.isEmpty()) return;
+                    if (report.isEmpty()) return result;
 
                     model = report.getModel();
 
@@ -135,15 +138,14 @@ public class LDALauncher {
 
             }while(!isReady);
 
-
-
             LOG.info("saving model to disk .. ");
-            modelLauncher.saveModel(parameters.getOutputDir(), "lda", parameters, model, parameters.getNumTopWords(), pipe);
+            result = modelLauncher.saveModel(parameters.getOutputDir(), "lda", parameters, model, parameters.getNumTopWords(), pipe);
 
             LOG.info(" Model created and saved successfully");
-
         }catch (Exception e){
             LOG.error("Error creating topic model", e);
+        } finally {
+            return result;
         }
     }
 
