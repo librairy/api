@@ -58,7 +58,7 @@ public class CSVReader extends FileReader{
             if (map.containsKey("id")){
                 StringBuilder id = new StringBuilder();
                 for(Integer i : map.get("id")){
-                    id.append(format(values[i]));
+                    id.append(StringReader.softLabelFormat(values[i]));
                 }
 
                 document.setId(id.toString());
@@ -87,7 +87,7 @@ public class CSVReader extends FileReader{
                 StringBuilder labels = new StringBuilder();
                 for(Integer i : map.get("labels")){
                     if (values.length>i) {
-                        labels.append(StringReader.softFormat(values[i])).append(" ");
+                        labels.append(StringReader.softLabelFormat(values[i])).append(" ");
                     }
                 }
 

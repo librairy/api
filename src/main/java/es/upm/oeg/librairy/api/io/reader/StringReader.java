@@ -15,18 +15,26 @@ public class StringReader {
     public static String hardFormat(String raw){
 
         return StringUtils.stripAccents(raw)
+                .replaceAll("[^a-zA-Z0-9 .,'_-]", "")
                 .replaceAll("[.]"," . ")
-                .replaceAll("\\P{Print}", "")
-                .replaceAll("[^a-zA-Z0-9 .,'_-]", "");
+                .replaceAll("\\P{Print}", "");
 
     }
 
     public static String softFormat(String raw){
 
         return StringUtils.stripAccents(raw)
+                .replaceAll("[^a-zA-Z0-9 .,'_:/-]", "")
                 .replaceAll("[.]"," . ")
-                .replaceAll("\\P{Print}", "")
-                .replaceAll("[^a-zA-Z0-9 .,'_:/-]", "");
+                .replaceAll("\\P{Print}", "");
+
+    }
+
+    public static String softLabelFormat(String raw){
+
+        return StringUtils.stripAccents(raw)
+                .replaceAll("[^a-zA-Z0-9 .,'_:/-]", "")
+                .replaceAll("\\P{Print}", "");
 
     }
 
@@ -34,8 +42,8 @@ public class StringReader {
     public static void main(String[] args) {
 
 
-        String text = "rácismo xenofobia.strasbourg millón regular personalidad referir trabajo información programa jurídico podrán";
-        LOG.info("-> " + hardFormat(text));
+        String text = "<http://dbpedia.org/resource/Abraham_Lincoln>";
+        LOG.info("-> " + softLabelFormat(text));
 
     }
 

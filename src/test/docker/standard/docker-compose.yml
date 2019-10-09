@@ -1,27 +1,19 @@
 version: '3'
 services:
-  librairy-solr:
-    image: solr
-    ports:
-     - "8983:8983"
-    volumes:
-      - ../../../../target/solr-data:/opt/solr/server/solr/mycores
-      - ../banana:/opt/solr/server/solr-webapp/webapp/banana
-    entrypoint:
-      - docker-entrypoint.sh
-      - solr-precreate
-      - documents
+  nlp:
+    image: librairy/nlp:latest
     environment:
-      - SOLR_JAVA_MEM=-Xms2g -Xmx2g
+      - JAVA_OPTS=-Xmx32248m
+      - REST_PATH=/nlp
+      - REST_PORT=80
   librairy-api:
     image: librairy/api:latest
     ports:
-     - "8080:7777"
+     - "7777:7777"
     environment:
       - LIBRAIRY_API_USERS=oeg:oeg2018
-      - JAVA_OPTS=-Xmx2048m
-      - REST_PATH=/api
-      - NLP_ENDPOINT=http://librairy.linkeddata.es/%%
+      - JAVA_OPTS=-Xmx53248m
+      - REST_PATH=/learner
     volumes:
-     - ../../../../target/api-data:/librairy
+     - ./tmp:/librairy
      - /var/run/docker.sock:/var/run/docker.sock

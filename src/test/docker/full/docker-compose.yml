@@ -1,8 +1,25 @@
 version: '3'
 services:
-  dbpedia-spotlight:
-   image: dbpedia/spotlight-english:latest
-   command: java -Dfile.encoding=UTF-8 -Xmx15G -Dthreads.max=5 -Dthreads.core=5 -jar /opt/spotlight/dbpedia-spotlight-nightly-build.jar /opt/spotlight/en  http://0.0.0.0:80/rest
+  dbpedia-fr-spotlight:
+    image: dbpedia/spotlight-french:latest
+    command: java -Dfile.encoding=UTF-8 -Xmx15G -Dthreads.max=15 -Dthreads.core=15 -jar /opt/spotlight/dbpedia-spotlight-nightly-build.jar /opt/spotlight/fr  http://0.0.0.0:80/rest
+    restart: always
+  dbpedia-de-spotlight:
+    image: dbpedia/spotlight-german:latest
+    command: java -Dfile.encoding=UTF-8 -Xmx15G -Dthreads.max=15 -Dthreads.core=15 -jar /opt/spotlight/dbpedia-spotlight-nightly-build.jar /opt/spotlight/de  http://0.0.0.0:80/rest
+    restart: always
+  dbpedia-en-spotlight:
+    image: dbpedia/spotlight-english:latest
+    command: java -Dfile.encoding=UTF-8 -Xmx15G -Dthreads.max=15 -Dthreads.core=15 -jar /opt/spotlight/dbpedia-spotlight-nightly-build.jar /opt/spotlight/en  http://0.0.0.0:80/rest
+    restart: always
+  dbpedia-es-spotlight:
+    image: dbpedia/spotlight-spanish:latest
+    command: java -Dfile.encoding=UTF-8 -Xmx15G -Dthreads.max=15 -Dthreads.core=15 -jar /opt/spotlight/dbpedia-spotlight-nightly-build.jar /opt/spotlight/es  http://0.0.0.0:80/rest
+    restart: always
+  dbpedia-it-spotlight:
+    image: dbpedia/spotlight-italian:latest
+    command: java -Dfile.encoding=UTF-8 -Xmx15G -Dthreads.max=15 -Dthreads.core=15 -jar /opt/spotlight/dbpedia-spotlight-nightly-build.jar /opt/spotlight/it  http://0.0.0.0:80/rest
+    restart: always
   nlp:
     image: librairy/nlp:latest
     environment:
