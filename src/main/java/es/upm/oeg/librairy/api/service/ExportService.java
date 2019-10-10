@@ -76,7 +76,7 @@ public class ExportService {
     @Value("#{environment['DOCKER_PWD']?:'${docker.pwd}'}")
     String dockerPwd;
 
-    @Value("#{environment['DOCKER_PWD']?:'${docker.repo}'}")
+    @Value("#{environment['DOCKER_REPO']?:'${docker.repo}'}")
     String dockerRepo;
 
     @Autowired
