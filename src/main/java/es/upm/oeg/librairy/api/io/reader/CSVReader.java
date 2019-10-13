@@ -67,7 +67,7 @@ public class CSVReader extends FileReader{
             if (map.containsKey("name")){
                 StringBuilder name = new StringBuilder();
                 for(Integer i : map.get("name")){
-                    name.append(format(values[i]));
+                    name.append(StringReader.softLabelFormat(values[i]));
                 }
 
                 document.setName(name.toString());
