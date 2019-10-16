@@ -1,0 +1,24 @@
+{
+  "contactEmail": "cbadenes@fi.upm.es",
+  "dataSink": {
+    "format": "SOLR_CORE",
+    "url": "https://librairy.linkeddata.es/solr/dbpedia"
+  },
+  "dataSource": {
+    "name":"train",
+    "dataFields": {
+      "id": "0",
+      "labels": [
+        "1"
+      ],
+      "text": [
+        "2"
+      ]
+    },
+    "filter":"\t",
+    "format": "CSV_TAR_GZ",
+    "offset": 1,
+    "size": -1,
+    "url": "/librairy/dataset/dbpedia-corpus.csv.gz"
+  }
+}
