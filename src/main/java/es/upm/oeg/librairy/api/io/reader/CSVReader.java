@@ -2,16 +2,21 @@ package es.upm.oeg.librairy.api.io.reader;
 
 import com.google.common.base.Strings;
 import es.upm.oeg.librairy.api.builders.DateBuilder;
+import es.upm.oeg.librairy.api.facade.model.avro.DataFields;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
+import es.upm.oeg.librairy.api.facade.model.avro.ReaderFormat;
 import es.upm.oeg.librairy.api.model.Document;
 import es.upm.oeg.librairy.api.model.QueryDocument;
 import es.upm.oeg.librairy.api.service.LanguageService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -49,7 +54,7 @@ public class CSVReader extends FileReader{
                 return Optional.empty();
             }
 
-            String[] values = line.split(separator);
+            String[] values = parse(separator,line);
 
             Document document = new Document();
 
@@ -113,4 +118,43 @@ public class CSVReader extends FileReader{
         }
     }
 
+    public static String[] parse(String separator, String csvLine) {
+        String pattern = "\"([^\"]*)\"|(?<="+separator+"|^)([^"+separator+"]*)(?:"+separator+"|$)";
+        Pattern csvPattern = Pattern.compile(pattern);
+        Matcher matcher = csvPattern.matcher(csvLine);
+        List<String> allMatches = new ArrayList<>();
+        String match;
+        while (matcher.find()) {
+            match = matcher.group(1);
+            if (match!=null) {
+                allMatches.add(match);
+            }
+            else {
+                allMatches.add(matcher.group(2));
+            }
+        }
+        if (!allMatches.isEmpty()) return allMatches.toArray(new String[allMatches.size()]);
+        return new String[]{};
+    }
+
+
+    public static void main(String[] args) throws IOException {
+        DataSource ds = DataSource.newBuilder()
+                .setDataFields(DataFields.newBuilder().setId("0").setText(Arrays.asList(new String[]{"1"})).build())
+                .setName("tender")
+                .setFilter(",")
+                .setFormat(ReaderFormat.CSV)
+                .setOffset(1)
+                .setSize(-1)
+                .setUrl("https://www.dropbox.com/s/iqa1msg3l7l35kx/query-result10k-parsed.csv?raw=1")
+                .build();
+        LanguageService lService = new LanguageService();
+        lService.setup();
+        CSVReader reader = new CSVReader(ds,false,lService);
+        Integer count = 0;
+        while(reader.next().isPresent()){
+            count++;
+        }
+        System.out.println(count);
+    }
 }

@@ -31,7 +31,7 @@
         "0": {
           "type": "range",
           "from": "0",
-          "to": "2750",
+          "to": "5000",
           "field": "size_i",
           "mandate": "must",
           "active": true,
@@ -90,7 +90,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&fq=size_i:[0 TO 2750]&stats=true&stats.field=id&wt=json&rows=0\n",
+            "query": "q=*%3A*&fq=size_i:[0 TO 5000]&stats=true&stats.field=id&wt=json&rows=0\n",
             "basic_query": "",
             "custom": ""
           },
@@ -112,7 +112,7 @@
               "field": "id",
               "decimalDigits": 0,
               "label": "",
-              "value": "0"
+              "value": "71769"
             }
           ],
           "refresh": {
@@ -130,7 +130,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&fq=size_i:[0 TO 2750]&stats=true&stats.field=size_i&stats.field=size_i&stats.field=size_i&stats.field=size_i&wt=json&rows=0\n",
+            "query": "q=*%3A*&fq=size_i:[0 TO 5000]&stats=true&stats.field=size_i&stats.field=size_i&stats.field=size_i&stats.field=size_i&wt=json&rows=0\n",
             "basic_query": "",
             "custom": ""
           },
@@ -151,28 +151,28 @@
               "field": "size_i",
               "decimalDigits": 2,
               "label": "min",
-              "value": "3.00"
+              "value": "101.00"
             },
             {
               "type": "mean",
               "field": "size_i",
               "decimalDigits": 2,
               "label": "mean",
-              "value": "692.25"
+              "value": "2258.40"
             },
             {
               "type": "max",
               "field": "size_i",
               "decimalDigits": 2,
               "label": "max",
-              "value": "2742.00"
+              "value": "5000.00"
             },
             {
               "type": "stddev",
               "field": "size_i",
               "decimalDigits": 2,
               "label": "stddev",
-              "value": "576.74"
+              "value": "1163.19"
             }
           ],
           "refresh": {
@@ -210,13 +210,13 @@
       "collapsable": true,
       "panels": [
         {
-          "span": 12,
+          "span": 6,
           "editable": true,
           "type": "bar",
           "loadingEditor": false,
           "queries": {
             "mode": "all",
-            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 2750]&facet=true&facet.field=source_s&facet.limit=20",
+            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 5000]&facet=true&facet.field=source_s&facet.limit=20",
             "custom": "",
             "ids": [
               0
@@ -227,6 +227,25 @@
           "spyable": true,
           "show_queries": true,
           "title": "Source"
+        },
+        {
+          "span": 6,
+          "editable": true,
+          "type": "bar",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 5000]&facet=true&facet.field=lang_s&facet.limit=10",
+            "custom": "",
+            "ids": [
+              0
+            ]
+          },
+          "field": "lang_s",
+          "size": 10,
+          "spyable": true,
+          "show_queries": true,
+          "title": "Languages"
         }
       ]
     },
@@ -247,7 +266,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&fq=size_i:[0 TO 2750]&facet=true&facet.field=labels_t&facet.limit=500&facet.missing=true&f.labels_t.facet.sort=count",
+            "query": "q=*%3A*&wt=json&fq=size_i:[0 TO 5000]&facet=true&facet.field=labels_t&facet.limit=500&facet.missing=true&f.labels_t.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
@@ -361,7 +380,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 2750]&facet=true&facet.range=size_i&facet.range.start=0&facet.range.end=2751&facet.range.gap=29\n",
+            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 5000]&facet=true&facet.range=size_i&facet.range.start=0&facet.range.end=2751&facet.range.gap=51\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -370,7 +389,7 @@
           "linewidth": 3,
           "auto_int": true,
           "resolution": 100,
-          "interval": 29,
+          "interval": 51,
           "interval_decimal": 0,
           "resolutions": [
             5,
@@ -394,9 +413,9 @@
           "interactive": true,
           "options": true,
           "minimum": 0,
-          "maximum": 2750,
+          "maximum": 5000,
           "chart_minimum": "0",
-          "chart_maximum": "2750",
+          "chart_maximum": "5000",
           "tooltip": {
             "value_type": "cumulative",
             "query_as_alias": false
@@ -430,8 +449,8 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&fq=size_i:[0 TO 2750]&wt=json&rows=125",
-            "basic_query": "q=*%3A*&fq=size_i:[0 TO 2750]",
+            "query": "q=*%3A*&fq=size_i:[0 TO 5000]&wt=json&rows=125",
+            "basic_query": "q=*%3A*&fq=size_i:[0 TO 5000]",
             "custom": ""
           },
           "size": 25,
@@ -519,11 +538,13 @@
   },
   "solr": {
     "server": "/solr/",
-    "core_name": "documents",
+    "core_name": "tbfy",
     "global_params": "",
     "core_list": [
       "dbpedia",
-      "documents"
+      "eurovoc",
+      "jrc",
+      "tbfy"
     ]
   },
   "username": "guest",

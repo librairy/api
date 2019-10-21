@@ -12,12 +12,18 @@ public class StringReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(StringReader.class);
 
+    public static String basicFormat(String raw){
+
+        return StringUtils.stripAccents(raw)
+                .replaceAll("\\P{Print}", "");
+
+    }
+
     public static String hardFormat(String raw){
 
         return StringUtils.stripAccents(raw)
                 .replaceAll("[^a-zA-Z0-9 .,'_-]", "")
-                .replaceAll("[.]"," . ")
-                .replaceAll("\\P{Print}", "");
+                .replaceAll("[.]"," . ");
 
     }
 
@@ -25,16 +31,14 @@ public class StringReader {
 
         return StringUtils.stripAccents(raw)
                 .replaceAll("[^a-zA-Z0-9 .,'_:/-]", "")
-                .replaceAll("[.]"," . ")
-                .replaceAll("\\P{Print}", "");
+                .replaceAll("[.]"," . ");
 
     }
 
     public static String softLabelFormat(String raw){
 
         return StringUtils.stripAccents(raw)
-                .replaceAll("[^a-zA-Z0-9 .,'_:/-]", "")
-                .replaceAll("\\P{Print}", "");
+                .replaceAll("[^a-zA-Z0-9 .,'_:/-]", "");
 
     }
 
