@@ -1,0 +1,22 @@
+{
+  "contactEmail": "cbadenes@gmail.com",
+  "dataSink": {
+    "format": "SOLR_CORE",
+    "url": "https://librairy.linkeddata.es/solr/tbfy"
+  },
+  "dataSource": {
+    "name":"tender",
+    "dataFields": {
+      "id": "0",
+      "name": "0",
+      "text": [
+        "1"
+      ]
+    },
+    "filter":",",
+    "format": "CSV",
+    "offset": 1,
+    "size": -1,
+    "url": "https://www.dropbox.com/s/6lb6a525gle8dvo/document-tender-parsed.csv?raw=1"
+  }
+}

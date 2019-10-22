@@ -97,7 +97,7 @@ public class SolrWriter implements Writer {
         String id = document.getId();
         Map<String,Object> fields = new HashMap<>();
         if (!document.getLabels().isEmpty()) fields.put("labels_t", document.getLabels().stream().collect(Collectors.joining(" ")));
-        fields.put("name_t", document.getName());
+        fields.put("name_s", document.getName());
         fields.put("file_s", document.getFile());
         fields.put("txt_t",document.getText());
         fields.put("size_i",document.getText().length());
