@@ -69,11 +69,7 @@ public class LanguageService {
 
         TextObject textObject   = textObjectFactory.forText(text);
         Optional<LdLocale> lang = languageDetector.detect(textObject);
-        if (!lang.isPresent()){
-            lang = Optional.of(LdLocale.fromString(DEFAULT_LANG));
-        }
-        String language = lang.get().getLanguage();
-        return language;
+        return (!lang.isPresent())? "unknown" : lang.get().getLanguage();
     }
 
 

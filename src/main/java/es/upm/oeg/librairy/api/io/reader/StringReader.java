@@ -1,5 +1,6 @@
 package es.upm.oeg.librairy.api.io.reader;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,23 +22,33 @@ public class StringReader {
 
     public static String hardFormat(String raw){
 
-        return StringUtils.stripAccents(raw)
+        String t1 = StringEscapeUtils.unescapeHtml4(raw);
+        String t2 = StringEscapeUtils.unescapeXml(t1);
+
+        return StringUtils.
+                stripAccents(t2)
                 .replaceAll("[^a-zA-Z0-9 .,'_-]", "")
-                .replaceAll("[.]"," . ");
+                .replaceAll("[.]",". ");
 
     }
 
     public static String softFormat(String raw){
 
-        return StringUtils.stripAccents(raw)
+        String t1 = StringEscapeUtils.unescapeHtml4(raw);
+        String t2 = StringEscapeUtils.unescapeXml(t1);
+
+        return StringUtils.stripAccents(t2)
                 .replaceAll("[^a-zA-Z0-9 .,'_:/-]", "")
-                .replaceAll("[.]"," . ");
+                .replaceAll("[.]",". ");
 
     }
 
     public static String softLabelFormat(String raw){
 
-        return StringUtils.stripAccents(raw)
+        String t1 = StringEscapeUtils.unescapeHtml4(raw);
+        String t2 = StringEscapeUtils.unescapeXml(t1);
+
+        return StringUtils.stripAccents(t2)
                 .replaceAll("[^a-zA-Z0-9 .,'_:/-]", "");
 
     }
