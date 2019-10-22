@@ -24,7 +24,6 @@
     },
     "filter": {
       "idQueue": [
-        1,
         2
       ],
       "list": {
@@ -37,10 +36,20 @@
           "active": true,
           "alias": "",
           "id": 0
+        },
+        "1": {
+          "type": "terms",
+          "field": "source_s",
+          "value": "tender",
+          "mandate": "must",
+          "active": true,
+          "alias": "",
+          "id": 1
         }
       },
       "ids": [
-        0
+        0,
+        1
       ]
     }
   },
@@ -90,7 +99,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&fq=size_i:[0 TO 5000]&stats=true&stats.field=id&wt=json&rows=0\n",
+            "query": "q=*%3A*&fq=size_i:[0 TO 5000]&fq=source_s:\"tender\"&stats=true&stats.field=id&wt=json&rows=0\n",
             "basic_query": "",
             "custom": ""
           },
@@ -112,7 +121,7 @@
               "field": "id",
               "decimalDigits": 0,
               "label": "",
-              "value": "71769"
+              "value": "217113"
             }
           ],
           "refresh": {
@@ -130,7 +139,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&fq=size_i:[0 TO 5000]&stats=true&stats.field=size_i&stats.field=size_i&stats.field=size_i&stats.field=size_i&wt=json&rows=0\n",
+            "query": "q=*%3A*&fq=size_i:[0 TO 5000]&fq=source_s:\"tender\"&stats=true&stats.field=size_i&stats.field=size_i&stats.field=size_i&stats.field=size_i&wt=json&rows=0\n",
             "basic_query": "",
             "custom": ""
           },
@@ -151,28 +160,28 @@
               "field": "size_i",
               "decimalDigits": 2,
               "label": "min",
-              "value": "101.00"
+              "value": "1.00"
             },
             {
               "type": "mean",
               "field": "size_i",
               "decimalDigits": 2,
               "label": "mean",
-              "value": "2258.40"
+              "value": "421.22"
             },
             {
               "type": "max",
               "field": "size_i",
               "decimalDigits": 2,
               "label": "max",
-              "value": "5000.00"
+              "value": "4998.00"
             },
             {
               "type": "stddev",
               "field": "size_i",
               "decimalDigits": 2,
               "label": "stddev",
-              "value": "1163.19"
+              "value": "665.54"
             }
           ],
           "refresh": {
@@ -216,7 +225,7 @@
           "loadingEditor": false,
           "queries": {
             "mode": "all",
-            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 5000]&facet=true&facet.field=source_s&facet.limit=20",
+            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 5000]&fq=source_s:\"tender\"&facet=true&facet.field=source_s&facet.limit=20",
             "custom": "",
             "ids": [
               0
@@ -235,14 +244,14 @@
           "loadingEditor": false,
           "queries": {
             "mode": "all",
-            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 5000]&facet=true&facet.field=lang_s&facet.limit=10",
+            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 5000]&fq=source_s:\"tender\"&facet=true&facet.field=lang_s&facet.limit=20",
             "custom": "",
             "ids": [
               0
             ]
           },
           "field": "lang_s",
-          "size": 10,
+          "size": 20,
           "spyable": true,
           "show_queries": true,
           "title": "Languages"
@@ -266,7 +275,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&fq=size_i:[0 TO 5000]&facet=true&facet.field=labels_t&facet.limit=500&facet.missing=true&f.labels_t.facet.sort=count",
+            "query": "q=*%3A*&wt=json&fq=size_i:[0 TO 5000]&fq=source_s:\"tender\"&facet=true&facet.field=labels_t&facet.limit=500&facet.missing=true&f.labels_t.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
@@ -380,7 +389,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 5000]&facet=true&facet.range=size_i&facet.range.start=0&facet.range.end=2751&facet.range.gap=51\n",
+            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 5000]&fq=source_s:\"tender\"&facet=true&facet.range=size_i&facet.range.start=0&facet.range.end=5001&facet.range.gap=51\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -449,8 +458,8 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&fq=size_i:[0 TO 5000]&wt=json&rows=125",
-            "basic_query": "q=*%3A*&fq=size_i:[0 TO 5000]",
+            "query": "q=*%3A*&fq=size_i:[0 TO 5000]&fq=source_s:\"tender\"&wt=json&rows=125",
+            "basic_query": "q=*%3A*&fq=size_i:[0 TO 5000]&fq=source_s:\"tender\"",
             "custom": ""
           },
           "size": 25,
