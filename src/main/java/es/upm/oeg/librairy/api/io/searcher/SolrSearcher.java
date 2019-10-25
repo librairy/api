@@ -5,11 +5,20 @@ import es.upm.oeg.librairy.api.facade.model.avro.Credentials;
 import es.upm.oeg.librairy.api.facade.model.avro.DataFields;
 import es.upm.oeg.librairy.api.facade.model.avro.DataSource;
 import es.upm.oeg.librairy.api.model.QueryDocument;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -22,6 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -41,6 +52,8 @@ public class SolrSearcher implements Searcher {
     private final List<String> txtFields;
     private final List<String> labelsFields;
     private final Long maxSize;
+    private final CloseableHttpClient httpClient;
+    private final String url;
 
 
     public SolrSearcher(DataSource dataSource) throws IOException {
@@ -71,7 +84,10 @@ public class SolrSearcher implements Searcher {
             client.setDefaultCredentialsProvider(provider);
         }
 
-        this.solrClient     = new HttpSolrClient.Builder(dataSource.getUrl()).withHttpClient(client.build()).build();
+        this.httpClient = client.build();
+        this.url        = dataSource.getUrl();
+
+        this.solrClient     = new HttpSolrClient.Builder(dataSource.getUrl()).withHttpClient(httpClient).build();
 
     }
 
@@ -87,17 +103,7 @@ public class SolrSearcher implements Searcher {
                 fields.get().forEach(f -> refQuery.addField(f));
             }
 
-            String query = "*:*";
-
-            // purge query params
-
-
-
-            if (!queryParams.isEmpty()){
-                List<String> params = combine? combine(queryParams) : queryParams.entrySet().stream().map(e -> e.getKey()+":"+e.getValue()).collect(Collectors.toList());
-                query = params.stream().collect(Collectors.joining(" OR "));
-            }
-
+            String query = createQuery(queryParams, combine);
             refQuery.setQuery(query);
 
             if (!Strings.isNullOrEmpty(filterQuery)) refQuery.addFilterQuery(filterQuery);
@@ -124,6 +130,71 @@ public class SolrSearcher implements Searcher {
         }
 
 
+    }
+
+    private String createQuery(Map<String, Object> queryParams, Boolean combine){
+        String query = "*:*";
+        if (!queryParams.isEmpty()){
+            List<String> params = combine? combine(queryParams) : queryParams.entrySet().stream().map(e -> e.getKey()+":"+e.getValue()).collect(Collectors.toList());
+            query = params.stream().collect(Collectors.joining(" OR "));
+        }
+        return query;
+    }
+
+    @Override
+    public String getRawBy(Map<String, Object> queryParams, String filter, Optional<List<String>> fields, Integer max, Boolean combine, Long offset) {
+
+        String endpoint = this.url+"/select";
+        HttpGet httpGet = new HttpGet(endpoint);
+        httpGet.setHeader("Accept", "application/json");
+        httpGet.setHeader("Content-type", "application/json");
+
+        List<NameValuePair> parameters = new ArrayList<>();
+
+        List<String> mandatoryFields = new ArrayList<>();
+        mandatoryFields.add("id");
+        mandatoryFields.add("score");
+        mandatoryFields.add("topics0_t");
+        mandatoryFields.add("source_s");
+        mandatoryFields.add("lang_s");
+
+        if (fields.isPresent()) mandatoryFields.addAll(fields.get());
+
+        String query = createQuery(queryParams, combine);
+        parameters.add(new BasicNameValuePair("q",query));
+        if (!Strings.isNullOrEmpty(filter)) parameters.add(new BasicNameValuePair("fq",filter));
+        parameters.add(new BasicNameValuePair("fl",mandatoryFields.stream().map(x -> x).collect(Collectors.joining(","))));
+        parameters.add(new BasicNameValuePair("wt","json"));
+        parameters.add(new BasicNameValuePair("start",String.valueOf(offset+1)));
+        parameters.add(new BasicNameValuePair("rows",String.valueOf(max)));
+
+        //
+        parameters.add(new BasicNameValuePair("facet","true"));
+        parameters.add(new BasicNameValuePair("facet.limit","20"));
+        //parameters.add(new BasicNameValuePair("json.wrf","20"));
+        parameters.add(new BasicNameValuePair("facet.field","topics0_t"));
+        parameters.add(new BasicNameValuePair("facet.field","source_s"));
+        parameters.add(new BasicNameValuePair("facet.field","lang_s"));
+        parameters.add(new BasicNameValuePair("facet.mincount","1"));
+
+        String result = "";
+        try {
+            URI uri = new URIBuilder(httpGet.getURI()).addParameters(parameters).build();
+            httpGet.setURI(uri);
+            CloseableHttpResponse response = httpClient.execute(httpGet);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                result = EntityUtils.toString(entity);
+            }
+        } catch (IOException e) {
+            LOG.error("Unexpected error from Solr client",e);
+        } catch (URISyntaxException e) {
+            LOG.error("Unexpected error by URI",e);
+        }
+
+        LOG.debug(result);
+
+        return result;
     }
 
     private List<String> combine(Map<String, Object> params){
@@ -198,6 +269,49 @@ public class SolrSearcher implements Searcher {
             return Collections.emptyList();
         }
 
+    }
+
+    @Override
+    public String getRawMoreLikeThis(String id, String queryField, String filter, Optional<List<String>> fields, Integer max, Long offset) {
+        String endpoint = this.url+"/select";
+        HttpGet httpGet = new HttpGet(endpoint);
+        httpGet.setHeader("Accept", "application/json");
+        httpGet.setHeader("Content-type", "application/json");
+
+        List<NameValuePair> parameters = new ArrayList<>();
+
+        parameters.add(new BasicNameValuePair("q","id:"+id));
+        if (!Strings.isNullOrEmpty(filter)) parameters.add(new BasicNameValuePair("fq",filter));
+        if (fields.isPresent()) parameters.add(new BasicNameValuePair("fl","id,score"));
+        parameters.add(new BasicNameValuePair("wt","json"));
+        parameters.add(new BasicNameValuePair("start",String.valueOf(offset)));
+        parameters.add(new BasicNameValuePair("rows",String.valueOf(max)));
+
+
+        parameters.add(new BasicNameValuePair("mlt","true"));
+        parameters.add(new BasicNameValuePair("mlt.fl",queryField));
+        parameters.add(new BasicNameValuePair("mlt.mindf","1"));
+        parameters.add(new BasicNameValuePair("mlt.mintf","1"));
+        parameters.add(new BasicNameValuePair("mlt.minwl","1"));
+        parameters.add(new BasicNameValuePair("mlt.boost","false"));
+        parameters.add(new BasicNameValuePair("mlt.count","max"));
+
+        String result = "";
+        try {
+            URI uri = new URIBuilder(httpGet.getURI()).addParameters(parameters).build();
+            httpGet.setURI(uri);
+            CloseableHttpResponse response = httpClient.execute(httpGet);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                result = EntityUtils.toString(entity);
+            }
+        } catch (IOException e) {
+            LOG.error("Unexpected error from Solr client",e);
+        } catch (URISyntaxException e) {
+            LOG.error("Unexpected error by URI",e);
+        }
+
+        return result;
     }
 
     private List<QueryDocument> toQueryDocuments(SolrDocumentList solrDocumentList, Optional<List<String>> fields){

@@ -60,7 +60,7 @@ public abstract class FileReader implements Reader{
             AtomicInteger counter = new AtomicInteger();
             String line;
             try{
-                while (((line = reader.readLine()) != null) && (counter.incrementAndGet() <= numLines)){
+                while (((line = reader.readLine()) != null) && (counter.incrementAndGet() < numLines)){
                 }
 
             }catch (Exception e){

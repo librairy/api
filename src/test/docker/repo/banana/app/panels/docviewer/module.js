@@ -4,7 +4,7 @@
 */
 define([
   'angular',
-  'src/test/docker/repo/banana/app/app',
+  'app',
   'kbn',
   'underscore'/*,
   'jquery'*/

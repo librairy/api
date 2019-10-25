@@ -9,7 +9,7 @@
 */
 define([
   'angular',
-  'src/test/docker/repo/banana/app/app',
+  'app',
   'underscore',
   'css!./query.css'
 ], function (angular, app, _) {

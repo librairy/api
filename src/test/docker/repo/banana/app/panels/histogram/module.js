@@ -29,7 +29,7 @@
 */
 define([
   'angular',
-  'src/test/docker/repo/banana/app/app',
+  'app',
   'jquery',
   'underscore',
   'kbn',

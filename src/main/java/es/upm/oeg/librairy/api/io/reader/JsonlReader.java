@@ -61,7 +61,7 @@ public class  JsonlReader extends FileReader{
             }
             if (map.containsKey("text"))    {
                 document.setText(retrieve(jsonObject, map.get("text"), true));
-                String lang = languageService.getLanguage(document.getText().substring(0, Math.min(100, document.getText().length())));
+                String lang = languageService.getLanguage(document.getText());
                 document.setLang(lang);
             }
             if (map.containsKey("labels")){

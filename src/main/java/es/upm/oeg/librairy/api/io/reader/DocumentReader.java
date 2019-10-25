@@ -77,7 +77,7 @@ public class DocumentReader implements Reader {
                 document.setDate(DateBuilder.now());
                 document.setFormat(format);
 
-                String lang = langService.getLanguage(text.substring(0,Math.min(100, text.length())));
+                String lang = langService.getLanguage(text);
                 document.setLang(lang);
                 document.setSource(source);
             }

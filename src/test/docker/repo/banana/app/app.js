@@ -144,7 +144,7 @@ function (angular, $, _, appLevelRequire) {
 
   // load the core components
   require([
-    'src/test/docker/repo/banana/app/controllers/all',
+    'controllers/all',
     'directives/all',
     'filters/all'
   ], function () {

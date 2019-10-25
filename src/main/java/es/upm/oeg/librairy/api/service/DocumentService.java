@@ -73,7 +73,7 @@ public class DocumentService {
                     if (counter.incrementAndGet() % interval == 0) LOG.info(counter.get() + " documents indexed");
                     parallelExecutor.submit(() -> {
                         try {
-                            String lang = languageService.getLanguage(document.getText().substring(0,Math.min(100, document.getText().length())));
+                            String lang = languageService.getLanguage(document.getText());
                             document.setSource(source);
                             document.setDate(date);
                             document.setLang(lang);

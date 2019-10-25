@@ -27,6 +27,9 @@ public class ApiService implements LibrairyApi{
     @Autowired
     ItemService setService;
 
+    @Autowired
+    RankService rankService;
+
 
     @Override
     public Task createTopics(TopicsRequest request) throws AvroRemoteException {
@@ -65,6 +68,17 @@ public class ApiService implements LibrairyApi{
     public List<Item> createItems(ItemsRequest setRequest) throws AvroRemoteException {
         try {
             return setService.getItemsByHash(setRequest);
+        } catch (IOException e) {
+            throw new AvroRemoteException(e);
+        } catch (UnirestException e) {
+            throw new AvroRemoteException(e);
+        }
+    }
+
+    @Override
+    public String createRanks(ItemsRequest itemsRequest) throws AvroRemoteException {
+        try {
+            return rankService.getItemsByHash(itemsRequest);
         } catch (IOException e) {
             throw new AvroRemoteException(e);
         } catch (UnirestException e) {

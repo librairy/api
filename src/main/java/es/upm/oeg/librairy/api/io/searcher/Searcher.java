@@ -13,6 +13,10 @@ public interface Searcher {
 
     List<QueryDocument> getBy(Map<String,Object> query, String filter, Optional<List<String>> fields, Integer max, Boolean combine);
 
+    String getRawBy(Map<String,Object> query, String filter, Optional<List<String>> fields, Integer max, Boolean combine, Long offset);
+
     List<QueryDocument> getMoreLikeThis(String id, String queryField, String filter,Optional<List<String>> fields, Integer max);
+
+    String getRawMoreLikeThis(String id, String queryField, String filter,Optional<List<String>> fields, Integer max, Long offset);
 
 }

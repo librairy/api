@@ -77,7 +77,6 @@ public class InstanceBuilder {
         if (minFreq > 0 || maxDocRatio < 1.0){
 
             pipeBuilder.prune(new BoWReaderBuilder().fromCSV(filePath, regEx, textIndex, labelIndex, idIndex).getIterator(), tokenizer, pos, minFreq, maxDocRatio);
-
         }
 
         BoWReader csvReader = new BoWReaderBuilder().fromCSV(filePath, regEx, textIndex, labelIndex, idIndex);

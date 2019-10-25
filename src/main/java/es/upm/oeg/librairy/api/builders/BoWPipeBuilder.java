@@ -42,6 +42,8 @@ public class BoWPipeBuilder implements PipeBuilderI{
 
         pipeList.add(new TokenSequenceExpandBoW("="));
 
+        stopWordTokenizer.setMarkDeletions(true);
+
         pipeList.add(stopWordTokenizer);
 
         pipeList.add(new TokenSequence2FeatureSequence());
@@ -161,6 +163,7 @@ public class BoWPipeBuilder implements PipeBuilderI{
         }
         if (docProportionCutoff > 0.0) {
             List<String> stopWordsByDocFreq = docCounter.getPrunedWords(docProportionCutoff);
+            LOG.debug("Stopwords: " + stopWordsByDocFreq);
             LOG.info(stopWordsByDocFreq.size() + " words pruned by doc-freq [" + docProportionCutoff + "]");
             stopWordTokenizer.addStopWords(stopWordsByDocFreq);
         }

@@ -5,7 +5,7 @@
 */
 define([
   'angular',
-  'src/test/docker/repo/banana/app/app',
+  'app',
   'underscore'
 ],
 function (angular, app, _) {

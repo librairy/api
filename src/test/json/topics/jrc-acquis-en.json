@@ -21,6 +21,12 @@
     "stopwords":"",
     "stoplabels":"1039 1191 1282 1346 1390 1652 1690 1748 2117 2172 2180 2186 2190 2242 2258 2287 2288 2398 2616 2814 3013 3025 317 3232 3257 337 3582 3683 3689 3928 3952 3954 41 4157 4367 4587 4697 5265 565 5776 5974 6011 6382 6922 778 795 8365 962"
   },
+  "docker": {
+    "email": "cbadenes@gmail",
+    "password": "secret",
+    "repository": "librairy/jrc-en-model",
+    "user": "cbadenes"
+  },
   "dataSource": {
     "cache": false,
     "dataFields": {

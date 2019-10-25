@@ -2,7 +2,7 @@ define([
     'angular',
     'config',
     'underscore',
-    'src/test/docker/repo/banana/app/services/all'
+    'services/all'
 ],
 function (angular, config, _) {
     "use strict";

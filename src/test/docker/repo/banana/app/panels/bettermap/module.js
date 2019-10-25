@@ -10,7 +10,7 @@
 */
 define([
   'angular',
-  'src/test/docker/repo/banana/app/app',
+  'app',
   'underscore',
   './leaflet/leaflet-src',
   'require',
