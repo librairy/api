@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
  */
-@Configuration
+//@Configuration
 public class BasicAuthController extends SwaggerConfig {
 
     @Bean

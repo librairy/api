@@ -49,7 +49,6 @@ public class LanguageService {
 
         while(it.hasNext()) {
             LdLocale locale = (LdLocale)it.next();
-            LOG.info("language added: " + locale);
             languageProfiles.add(langReader.readBuiltIn(locale));
         }
 
