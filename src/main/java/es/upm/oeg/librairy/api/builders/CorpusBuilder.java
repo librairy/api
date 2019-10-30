@@ -1,5 +1,6 @@
 package es.upm.oeg.librairy.api.builders;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -67,7 +69,7 @@ public class CorpusBuilder {
         return counter.get();
     }
 
-    public void add(Document document, Boolean multigrams, Boolean raw, Boolean lowercase, Map<String,Long> stopwords) throws IOException {
+    public void add(Document document, Boolean multigrams, Boolean raw, String pos, Boolean lowercase, Map<String,Long> stopwords) throws IOException {
         if (Strings.isNullOrEmpty(document.getText()) || Strings.isNullOrEmpty(document.getText().replace("\n","").trim())) {
             LOG.warn("Document is empty: " + document.getId());
             return;
@@ -82,9 +84,12 @@ public class CorpusBuilder {
             row.append(labels).append(SEPARATOR);
             updateLanguage(document.getText());
             // bow from nlp-service
-            String docText = lowercase ? document.getText().toLowerCase() : document.getText();
-            String content = StringReader.hardFormat(docText);
-            String text = raw? content : BoWService.toText(librairyNlpClient.bow( content, language, Arrays.asList(PoS.NOUN, PoS.VERB, PoS.PROPER_NOUN, PoS.ADJECTIVE), multigrams).stream().filter(g -> !stopwords.containsKey(g.getToken())).collect(Collectors.toList()));
+            String documentText = document.getText();
+            boolean isAllUpperCase = CharMatcher.javaLowerCase().matchesNoneOf(documentText);
+            String docText = lowercase || isAllUpperCase ? documentText.toLowerCase() : documentText;
+            //String content = StringReader.hardFormat(docText);
+            List<PoS> posList = Arrays.stream(pos.split(" ")).map(l -> PoS.valueOf(l.toUpperCase())).collect(Collectors.toList());
+            String text = raw? docText : BoWService.toText(librairyNlpClient.bow( docText, language, posList, multigrams).stream().filter(g -> !stopwords.containsKey(g.getToken())).collect(Collectors.toList()));
             row.append(text);
             updated = DateBuilder.now();
             int count = write(row.toString());

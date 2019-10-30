@@ -74,6 +74,9 @@ public class DocumentService {
                     parallelExecutor.submit(() -> {
                         try {
                             String lang = languageService.getLanguage(document.getText());
+                            if (lang.equalsIgnoreCase("unknown")){
+                                lang = languageService.getLanguage(document.getName());
+                            }
                             document.setSource(source);
                             document.setDate(date);
                             document.setLang(lang);

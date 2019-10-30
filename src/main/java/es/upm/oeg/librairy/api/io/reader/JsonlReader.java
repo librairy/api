@@ -54,18 +54,18 @@ public class  JsonlReader extends FileReader{
             JSONObject jsonObject = new JSONObject(line);
 
             if (map.containsKey("id")) {
-                document.setId(retrieve(jsonObject, map.get("id"), false));
+                document.setId(retrieve(jsonObject, map.get("id"), true));
             }
             if (map.containsKey("name")) {
                 document.setName(retrieve(jsonObject, map.get("name"), false));
             }
             if (map.containsKey("text"))    {
-                document.setText(retrieve(jsonObject, map.get("text"), true));
+                document.setText(retrieve(jsonObject, map.get("text"), false));
                 String lang = languageService.getLanguage(document.getText());
                 document.setLang(lang);
             }
             if (map.containsKey("labels")){
-                document.setLabels(Arrays.asList(retrieve(jsonObject, map.get("labels"), false).split(" ")));
+                document.setLabels(Arrays.asList(retrieve(jsonObject, map.get("labels"), true).split(" ")));
             }
 
             if (map.containsKey("extra")){
@@ -86,7 +86,7 @@ public class  JsonlReader extends FileReader{
         }
     }
 
-    private String retrieve(JSONObject jsonObject, List<String> fields, Boolean hardFormat){
+    private String retrieve(JSONObject jsonObject, List<String> fields, Boolean format){
         StringBuilder txt = new StringBuilder();
         fields.stream().filter(i -> jsonObject.has(i)).forEach(i -> {
 
@@ -98,11 +98,11 @@ public class  JsonlReader extends FileReader{
 
                 for(int j=0;j<jsonArray.length();j++){
                     String innerText = (String) jsonArray.get(j);
-                    txt.append(hardFormat? format(innerText) : StringReader.softFormat(innerText)).append(" ");
+                    txt.append(format? StringReader.softLabelFormat(innerText) : StringReader.basicFormat(innerText)).append(" ");
                 }
 
             }else{
-                txt.append(hardFormat? format(jsonObject.getString(i)) : StringReader.softLabelFormat(jsonObject.getString(i))).append(" ");
+                txt.append(format? StringReader.softFormat(String.valueOf(jsonObject.get(i))) : StringReader.basicFormat(String.valueOf(jsonObject.get(i)))).append(" ");
             }
 
         });

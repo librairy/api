@@ -44,6 +44,7 @@ public class CollectorService {
 
             Boolean lowerCase   = request.getParameters() != null && request.getParameters().containsKey("lowercase")? Boolean.valueOf(request.getParameters().get("lowercase")) : false;
 
+            String pos = request.getParameters() != null && request.getParameters().containsKey("pos")? request.getParameters().get("pos") : "NOUN VERB PROPER_NOUN ADJECTIVE";
 
             DataSource datasource = request.getDataSource();
 
@@ -66,7 +67,7 @@ public class CollectorService {
                 parallelExecutor.submit(() -> {
                     try {
 
-                        corpusBuilder.add(document, multigrams, raw, lowerCase, stopwords);
+                        corpusBuilder.add(document, multigrams, raw, pos, lowerCase, stopwords);
                     } catch (Exception e) {
                         LOG.error("Unexpected error adding new document to corpus",e);
                     }

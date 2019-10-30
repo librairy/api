@@ -155,7 +155,6 @@ public class LabeledLDALauncher {
         Double alpha            = parameters.getAlpha();
         Double beta             = parameters.getBeta();
         Integer numTopWords     = parameters.getNumTopWords();
-        Integer numIterations   = parameters.getNumIterations();
         String pos              = parameters.getPos();
         Integer maxRetries      = parameters.getNumRetries();
         Boolean raw             = parameters.getRaw();
@@ -201,7 +200,11 @@ public class LabeledLDALauncher {
         LOG.info("Parallel model to: " + parallelThreads + " threads");
 //        labeledLDA.setNumThreads(parallelThreads);
 
-        //
+        Integer numIterations = Double.valueOf(Math.min(Double.valueOf(instances.size())/5.0, Double.valueOf(parameters.getNumIterations()))).intValue();
+        labeledLDA.setNumIterations(numIterations);
+        LOG.info("Num Iterations: " + numIterations);
+
+
         Integer intervalTopicDisplay = numIterations/2;
         labeledLDA.setTopicDisplay(intervalTopicDisplay, numTopWords);
         LOG.info("Interval Topic Display: " + intervalTopicDisplay);
@@ -211,8 +214,6 @@ public class LabeledLDALauncher {
         labeledLDA.maxRetries = maxRetries;
         LOG.info("Interval Topic Validation: " + intervalTopicValidation);
 
-        labeledLDA.setNumIterations(numIterations);
-        LOG.info("Num Iterations: " + numIterations);
 
         LOG.info("building labeled topic model " + parameters);
         Instant startModel = Instant.now();

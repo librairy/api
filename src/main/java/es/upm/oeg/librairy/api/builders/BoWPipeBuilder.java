@@ -42,8 +42,6 @@ public class BoWPipeBuilder implements PipeBuilderI{
 
         pipeList.add(new TokenSequenceExpandBoW("="));
 
-        stopWordTokenizer.setMarkDeletions(true);
-
         pipeList.add(stopWordTokenizer);
 
         pipeList.add(new TokenSequence2FeatureSequence());

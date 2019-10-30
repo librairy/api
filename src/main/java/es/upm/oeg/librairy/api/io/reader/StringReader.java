@@ -15,8 +15,12 @@ public class StringReader {
 
     public static String basicFormat(String raw){
 
-        return StringUtils.stripAccents(raw)
-                .replaceAll("\\P{Print}", "");
+        return  raw
+                .replaceAll("\n", " ")
+                .replaceAll("\r", " ")
+                .replaceAll("\b", " ")
+                .replaceAll("\"", "'")
+                ;
 
     }
 
@@ -27,8 +31,8 @@ public class StringReader {
 
         return StringUtils.
                 stripAccents(t2)
-                .replaceAll("[^a-zA-Z0-9 .,'_-]", "")
-                .replaceAll("[.]",". ");
+                .replaceAll("[^a-zA-Z0-9 .,'_-]", "");
+                //.replaceAll("[.]",". ");
 
     }
 
@@ -38,8 +42,8 @@ public class StringReader {
         String t2 = StringEscapeUtils.unescapeXml(t1);
 
         return StringUtils.stripAccents(t2)
-                .replaceAll("[^a-zA-Z0-9 .,'_:/-]", "")
-                .replaceAll("[.]",". ");
+                .replaceAll("[^a-zA-Z0-9 .,'_:/-]", "");
+                //.replaceAll("[.]",". ");
 
     }
 
@@ -47,9 +51,11 @@ public class StringReader {
 
         String t1 = StringEscapeUtils.unescapeHtml4(raw);
         String t2 = StringEscapeUtils.unescapeXml(t1);
+        String t3 = t2.trim();
 
-        return StringUtils.stripAccents(t2)
-                .replaceAll("[^a-zA-Z0-9 .,'_:/-]", "");
+        return StringUtils.stripAccents(t3)
+                .replaceAll("[^a-zA-Z0-9 .,'_:/-]", "").
+                replaceAll(" ","_");
 
     }
 
@@ -58,7 +64,9 @@ public class StringReader {
 
 
         String text = "<http://dbpedia.org/resource/Abraham_Lincoln>";
-        LOG.info("-> " + softLabelFormat(text));
+        //String text = "Policia y Medio Ambiente";
+        String t1 = "Buenos días. Enfrente al portal de Cesareo Alierta, 15, justo en el puente que atraviesa de un lado a otro la avenida, lleva creciendo durante años unahierba/matorral hasta tener unas dimensiones considerables. El matorrral ya tiene casi \"tronco\" y la raíz está desplazando las piezas del puente con el consiguiente peligro de desprendimiento hacia la vía donde circulan los vehículos. Por si es de su consideración.\\r\\nSaludos";
+        LOG.info("-> " + basicFormat(t1));
 
     }
 

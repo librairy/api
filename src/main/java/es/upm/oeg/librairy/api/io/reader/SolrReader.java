@@ -155,19 +155,19 @@ public class SolrReader implements Reader {
             }
 
             StringBuilder txt = new StringBuilder();
-            txtFields.stream().filter(tf -> solrDoc.containsKey(tf)).forEach(tf -> txt.append(StringReader.hardFormat(solrDoc.getFieldValue(tf).toString())).append(" "));
+            txtFields.stream().filter(tf -> solrDoc.containsKey(tf)).forEach(tf -> txt.append(StringReader.basicFormat(solrDoc.getFieldValue(tf).toString())).append(" "));
             document.setText(txt.toString());
             document.setFormat("solr_document");
 
             if (!labelsFields.isEmpty()){
                 StringBuilder labels = new StringBuilder();
-                labelsFields.stream().filter(tf -> solrDoc.containsKey(tf)).forEach(tf -> labels.append(StringReader.softFormat(solrDoc.getFieldValue(tf).toString())).append(" "));
+                labelsFields.stream().filter(tf -> solrDoc.containsKey(tf)).forEach(tf -> labels.append(StringReader.softLabelFormat(solrDoc.getFieldValue(tf).toString())).append(" "));
                 document.setLabels(Arrays.asList(labels.toString().split(" ")));
             }
 
             if (!extraFields.isEmpty()){
                 Map<String,String> extraData = new HashMap<>();
-                extraFields.stream().filter(tf -> solrDoc.containsKey(tf)).forEach(tf -> extraData.put(tf, StringReader.softFormat(solrDoc.getFieldValue(tf).toString())));
+                extraFields.stream().filter(tf -> solrDoc.containsKey(tf)).forEach(tf -> extraData.put(tf, StringReader.basicFormat(solrDoc.getFieldValue(tf).toString())));
                 document.setExtraData(extraData);
             }
 

@@ -72,7 +72,7 @@ public class CSVReader extends FileReader{
             if (map.containsKey("name")){
                 StringBuilder name = new StringBuilder();
                 for(Integer i : map.get("name")){
-                    name.append(StringReader.softLabelFormat(values[i]));
+                    name.append(StringReader.basicFormat(values[i]));
                 }
 
                 document.setName(name.toString());
@@ -81,7 +81,7 @@ public class CSVReader extends FileReader{
             if (map.containsKey("text")) {
                 StringBuilder text = new StringBuilder();
                 for(Integer i : map.get("text")){
-                    text.append(format(values[i])).append(" ");
+                    text.append(StringReader.basicFormat(values[i])).append(" ");
                 }
 
                 document.setText(text.toString());

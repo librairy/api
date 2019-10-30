@@ -155,7 +155,6 @@ public class LDALauncher {
         Double alpha        = parameters.getAlpha();
         Double beta         = parameters.getBeta();
         Integer numTopWords = parameters.getNumTopWords();
-        Integer numIterations = parameters.getNumIterations();
         String pos          = parameters.getPos();
         Integer maxRetries  = parameters.getNumRetries();
         Boolean raw         = parameters.getRaw();
@@ -172,7 +171,7 @@ public class LDALauncher {
         InstanceList instances = instanceBuilder.getInstances(parameters.getCorpusFile(), corpusSize, parameters.getRegEx(), parameters.getTextIndex(), parameters.getLabelIndex(), parameters.getIdIndex(), false, pos, parameters.getMinFreq(), parameters.getMaxDocRatio(),raw, parameters.getStopwords(), parameters.getStoplabels());
 
         int numWords = instances.getDataAlphabet().size();
-        if ( numWords <= 10){
+        if ( numWords <= 10 || instances.size() <=10){
             LOG.warn("Not enough words ("+numWords+") to train a model. Task aborted");
             return new TopicReport();
         }
@@ -197,6 +196,9 @@ public class LDALauncher {
         LOG.info("Parallel model to: " + parallelThreads + " threads");
         model.setNumThreads(parallelThreads);
 
+        Integer numIterations = Double.valueOf(Math.min(Double.valueOf(instances.size())/5.0, Double.valueOf(parameters.getNumIterations()))).intValue();
+        model.setNumIterations(numIterations);
+        LOG.info("Num Iterations: " + numIterations);
 
         // Disable print loglikelihood. (use for testing purposes)
         model.printLogLikelihood = false;
@@ -214,12 +216,14 @@ public class LDALauncher {
         model.maxRetries = maxRetries;
         LOG.info("Interval Topic Validation: " + intervalTopicValidation);
 
-        model.setNumIterations(numIterations);
-        LOG.info("Num Iterations: " + numIterations);
-
         LOG.info("building topic model " + parameters);
         Instant startModel = Instant.now();
         model.estimate();
+
+        long invTopics = Arrays.stream(model.alpha).filter(e -> !(e > 0.0)).count();
+        if (invTopics>0){
+            LOG.warn("Too much Iterations!");
+        }
 
         Instant endModel = Instant.now();
         String durationModel = ChronoUnit.HOURS.between(startModel, endModel) + "hours "
