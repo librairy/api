@@ -89,10 +89,10 @@ public class CSVReader extends FileReader{
                 document.setLang(lang);
             }
             if (map.containsKey("labels")){
-                StringBuilder labels = new StringBuilder();
+                List<String> labels = new ArrayList<>();
                 for(Integer i : map.get("labels")){
                     if (values.length>i) {
-                        labels.append(StringReader.softLabelFormat(values[i])).append(" ");
+                        Arrays.stream(values[i].split(labelSeparator)).forEach(l -> labels.add(StringReader.softLabelFormat(l)));
                     }
                 }
 

@@ -64,9 +64,9 @@ public class StringReader {
 
 
         String text = "<http://dbpedia.org/resource/Abraham_Lincoln>";
-        //String text = "Policia y Medio Ambiente";
+        String t2 = "Policia y Medio Ambiente";
         String t1 = "Buenos días. Enfrente al portal de Cesareo Alierta, 15, justo en el puente que atraviesa de un lado a otro la avenida, lleva creciendo durante años unahierba/matorral hasta tener unas dimensiones considerables. El matorrral ya tiene casi \"tronco\" y la raíz está desplazando las piezas del puente con el consiguiente peligro de desprendimiento hacia la vía donde circulan los vehículos. Por si es de su consideración.\\r\\nSaludos";
-        LOG.info("-> " + basicFormat(t1));
+        LOG.info("-> " + softFormat(t2));
 
     }
 

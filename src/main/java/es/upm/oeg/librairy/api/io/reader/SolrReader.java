@@ -160,9 +160,10 @@ public class SolrReader implements Reader {
             document.setFormat("solr_document");
 
             if (!labelsFields.isEmpty()){
-                StringBuilder labels = new StringBuilder();
-                labelsFields.stream().filter(tf -> solrDoc.containsKey(tf)).forEach(tf -> labels.append(StringReader.softLabelFormat(solrDoc.getFieldValue(tf).toString())).append(" "));
-                document.setLabels(Arrays.asList(labels.toString().split(" ")));
+                List<String> labels = new ArrayList<>();
+                //labelsFields.stream().filter(tf -> solrDoc.containsKey(tf)).forEach(tf -> labels.append(StringReader.softLabelFormat(solrDoc.getFieldValue(tf).toString())).append(" "));
+                labelsFields.stream().filter(lf -> solrDoc.containsKey(lf)).forEach(lf -> Arrays.stream(solrDoc.getFieldValue(lf).toString().split(" ")).forEach( l -> labels.add(StringReader.softLabelFormat(l) )));
+                document.setLabels(labels);
             }
 
             if (!extraFields.isEmpty()){

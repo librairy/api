@@ -102,7 +102,7 @@ public class  JsonlReader extends FileReader{
                 }
 
             }else{
-                txt.append(format? StringReader.softFormat(String.valueOf(jsonObject.get(i))) : StringReader.basicFormat(String.valueOf(jsonObject.get(i)))).append(" ");
+                txt.append(format? StringReader.softLabelFormat(String.valueOf(jsonObject.get(i))) : StringReader.basicFormat(String.valueOf(jsonObject.get(i)))).append(" ");
             }
 
         });

@@ -36,7 +36,7 @@ public class LanguageService {
     private LanguageDetector languageDetector;
     private TextObjectFactory textObjectFactory;
 
-    private List<String> availableLangs = Arrays.asList(new String[]{"en","es","fr","de","it"});
+    private List<String> availableLangs = Arrays.asList(new String[]{"en","es","fr","de","it","pt"});
 
     @PostConstruct
     public void setup() throws IOException {
