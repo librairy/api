@@ -30,8 +30,8 @@
       "list": {
         "0": {
           "type": "range",
-          "from": "9000",
-          "to": "50000",
+          "from": "0",
+          "to": "5000",
           "field": "size_i",
           "mandate": "must",
           "active": true,
@@ -90,7 +90,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&fq=size_i:[9000 TO 50000]&stats=true&stats.field=id&wt=json&rows=0\n",
+            "query": "q=*%3A*&fq=size_i:[0 TO 5000]&stats=true&stats.field=id&wt=json&rows=0\n",
             "basic_query": "",
             "custom": ""
           },
@@ -112,7 +112,7 @@
               "field": "id",
               "decimalDigits": 0,
               "label": "",
-              "value": "400"
+              "value": "500"
             }
           ],
           "refresh": {
@@ -130,7 +130,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&fq=size_i:[9000 TO 50000]&stats=true&stats.field=size_i&stats.field=size_i&stats.field=size_i&stats.field=size_i&wt=json&rows=0\n",
+            "query": "q=*%3A*&fq=size_i:[0 TO 5000]&stats=true&stats.field=size_i&stats.field=size_i&stats.field=size_i&stats.field=size_i&wt=json&rows=0\n",
             "basic_query": "",
             "custom": ""
           },
@@ -151,28 +151,28 @@
               "field": "size_i",
               "decimalDigits": 2,
               "label": "min",
-              "value": "9971.00"
+              "value": "998.00"
             },
             {
               "type": "mean",
               "field": "size_i",
               "decimalDigits": 2,
               "label": "mean",
-              "value": "22538.33"
+              "value": "1629.79"
             },
             {
               "type": "max",
               "field": "size_i",
               "decimalDigits": 2,
               "label": "max",
-              "value": "49398.00"
+              "value": "1994.00"
             },
             {
               "type": "stddev",
               "field": "size_i",
               "decimalDigits": 2,
               "label": "stddev",
-              "value": "10541.86"
+              "value": "269.47"
             }
           ],
           "refresh": {
@@ -216,7 +216,7 @@
           "loadingEditor": false,
           "queries": {
             "mode": "all",
-            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[9000 TO 50000]&facet=true&facet.field=source_s&facet.limit=20",
+            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 5000]&facet=true&facet.field=source_s&facet.limit=20",
             "custom": "",
             "ids": [
               0
@@ -235,7 +235,7 @@
           "loadingEditor": false,
           "queries": {
             "mode": "all",
-            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[9000 TO 50000]&facet=true&facet.field=lang_s&facet.limit=20",
+            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 5000]&facet=true&facet.field=lang_s&facet.limit=20",
             "custom": "",
             "ids": [
               0
@@ -266,7 +266,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&fq=size_i:[9000 TO 50000]&facet=true&facet.field=labels_t&facet.limit=500&facet.missing=true&f.labels_t.facet.sort=count",
+            "query": "q=*%3A*&wt=json&fq=size_i:[0 TO 5000]&facet=true&facet.field=labels_t&facet.limit=500&facet.missing=true&f.labels_t.facet.sort=count",
             "custom": ""
           },
           "mode": "count",
@@ -380,7 +380,7 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[9000 TO 50000]&facet=true&facet.range=size_i&facet.range.start=9999&facet.range.end=50002&facet.range.gap=411\n",
+            "query": "q=*%3A*&wt=json&rows=0&fq=size_i:[0 TO 5000]&facet=true&facet.range=size_i&facet.range.start=0&facet.range.end=5001&facet.range.gap=51\n",
             "custom": ""
           },
           "max_rows": 100000,
@@ -389,7 +389,7 @@
           "linewidth": 3,
           "auto_int": true,
           "resolution": 100,
-          "interval": 411,
+          "interval": 51,
           "interval_decimal": 0,
           "resolutions": [
             5,
@@ -412,10 +412,10 @@
           "percentage": false,
           "interactive": true,
           "options": true,
-          "minimum": 9000,
-          "maximum": 50000,
-          "chart_minimum": "9000",
-          "chart_maximum": "50000",
+          "minimum": 0,
+          "maximum": 5000,
+          "chart_minimum": "0",
+          "chart_maximum": "5000",
           "tooltip": {
             "value_type": "cumulative",
             "query_as_alias": false
@@ -449,8 +449,8 @@
             "ids": [
               0
             ],
-            "query": "q=*%3A*&fq=size_i:[9000 TO 50000]&wt=json&rows=125",
-            "basic_query": "q=*%3A*&fq=size_i:[9000 TO 50000]",
+            "query": "q=*%3A*&fq=size_i:[0 TO 5000]&wt=json&rows=125",
+            "basic_query": "q=*%3A*&fq=size_i:[0 TO 5000]",
             "custom": ""
           },
           "size": 25,

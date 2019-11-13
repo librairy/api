@@ -200,7 +200,7 @@ public class LabeledLDALauncher {
         LOG.info("Parallel model to: " + parallelThreads + " threads");
 //        labeledLDA.setNumThreads(parallelThreads);
 
-        Integer numIterations = Double.valueOf(Math.min(Double.valueOf(instances.size())/5.0, Double.valueOf(parameters.getNumIterations()))).intValue();
+        Integer numIterations = Double.valueOf(Math.min(Double.valueOf(instances.size())/2.0, Double.valueOf(parameters.getNumIterations()))).intValue();
         labeledLDA.setNumIterations(numIterations);
         LOG.info("Num Iterations: " + numIterations);
 

@@ -96,7 +96,7 @@ public class CSVReader extends FileReader{
                     }
                 }
 
-                document.setLabels(Arrays.asList(labels.toString().split(labelSeparator)));
+                document.setLabels(labels);
             }
             if (map.containsKey("extra")){
                 Map<String,String> extraData = new HashMap<>();
