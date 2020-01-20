@@ -176,10 +176,13 @@ public class LDALauncher {
             return new TopicReport();
         }
 
-        ParallelTopicModel model = new ParallelTopicModel(numTopics, numTopics*alpha, beta);
+        double alphaSum = numTopics * alpha;
+
+        ParallelTopicModel model = new ParallelTopicModel(numTopics, alphaSum, beta);
 
         model.setRandomSeed(seed);
-        model.setSymmetricAlpha(true);
+        //model.setSymmetricAlpha(true);
+        model.setSymmetricAlpha(false);
 
         int size = instances.size();
         model.addInstances(instances);

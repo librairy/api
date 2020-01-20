@@ -37,9 +37,9 @@ public class DumpCSVIntTest {
     @Test
     public void dump() throws UnirestException, IOException {
 
-        String language = "es";
-        int maxDocs = 475;
-        int maxDocsPerCategory = 75;
+        String language = "pt";
+        int maxDocs = 200;
+        int maxDocsPerCategory = 48;
 
         LanguageService languageService = new LanguageService();
         languageService.setup();
@@ -68,7 +68,7 @@ public class DumpCSVIntTest {
 
 
         //Get the file reference
-        Path path = Paths.get("/Users/cbadenes/Desktop/tutorial-KCAP/demo/batch/jrc-"+language+".csv");
+        Path path = Paths.get("/Users/cbadenes/Projects/librairy/public/demo/batch/jrc-"+language+".csv");
 
         //Use try-with-resource to get auto-closeable writer instance
         try (BufferedWriter writer = Files.newBufferedWriter(path))
@@ -79,17 +79,18 @@ public class DumpCSVIntTest {
 
             ConcurrentHashMap<String,Integer> validLabels = new ConcurrentHashMap<>();
             validLabels.put("4361",1);  // communication systems
-            validLabels.put("4488",1);  // data processing
-//            validLabels.put("2914",1);  // research
             validLabels.put("2817",1);   // intellectual property
-            validLabels.put("3641",1);  // technical regulations
-            validLabels.put("2524",1);  // pollution
-            validLabels.put("1810",1);  // public contract
-            validLabels.put("2472",1);  // information policy
             validLabels.put("4415",1);  // technology
-//            validLabels.put("494",1);  // documentation
-            validLabels.put("5268",1);  // commercial transaction
+            validLabels.put("4488",1);  // data processing
+            validLabels.put("2524",1);  // pollution
 
+//            validLabels.put("1810",1);  // public contract
+//            validLabels.put("3641",1);  // technical regulations
+//            validLabels.put("2472",1);  // information policy
+//            validLabels.put("5268",1);  // commercial transaction
+
+//            validLabels.put("2914",1);  // research
+//            validLabels.put("494",1);  // documentation
 //            validLabels.put("668",1);   // education
             //validLabels.put("1405",1);  // information technology industry
 //            validLabels.put("4486",1);  // information processing
