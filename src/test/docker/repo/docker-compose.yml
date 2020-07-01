@@ -1,7 +1,7 @@
 version: '3'
 services:
   librairy-solr:
-    image: solr
+    image: solr:8.3
     restart: "always"
     privileged: "true"
     ports:
