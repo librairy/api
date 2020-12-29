@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -70,13 +71,29 @@ public class ItemService {
         }else{
             // from inference
             TextReference textReference = reference.getText();
-            Map<Integer, List<String>> topicsMap = inferenceService.getTopicNamesByRelevance(textReference.getContent(), textReference.getModel());
-            hash = HashTopicBuilder.from(topicsMap);
+
+            // Partial Solution to reduce inconsistency
+            Map<Integer, List<String>> results = new HashMap<>();
+            results.put(0,new ArrayList<>());
+            results.put(1,new ArrayList<>());
+            results.put(2,new ArrayList<>());
+            for (int i=0;i<10;i++){
+                Map<Integer, List<String>> topicsMap = inferenceService.getTopicNamesByRelevance(textReference.getContent(), textReference.getModel());
+                LOG.debug("TopicsMap: " + topicsMap);
+                results.get(0).addAll(topicsMap.get(0));
+                results.get(1).addAll(topicsMap.get(1));
+                results.get(2).addAll(topicsMap.get(2));
+            }
+            Map<Integer, List<String>> finalMap = new HashMap<>();
+            finalMap.put(0,getMostFrequent(results.get(0)));
+            finalMap.put(1,getMostFrequent(results.get(1)));
+            finalMap.put(2,getMostFrequent(results.get(2)));
+            hash = HashTopicBuilder.from(finalMap);
         }
 
         // query by hash
         // convert hash into query params
-
+        LOG.debug("Final Hash: " + hash);
         List<QueryDocument> simDocs = searcher.getBy(
                 hash,
                 dataSource.getFilter(),
@@ -90,6 +107,18 @@ public class ItemService {
 
         return items;
 
+    }
+
+    private List<String> getMostFrequent(List<String> values){
+        HashMap<String, Long> freqMap = values.stream().collect(Collectors.groupingBy(Function.identity(), HashMap::new, Collectors.counting()));
+        Long maxFreq = 0l;
+        for (String k:freqMap.keySet()){
+            if (freqMap.get(k) > maxFreq){
+                maxFreq = freqMap.get(k);
+            }
+        }
+        final Long threshold = maxFreq/2l;
+        return freqMap.entrySet().stream().filter( entry -> entry.getValue() >= threshold).map(entry -> entry.getKey()).collect(Collectors.toList());
     }
 
     public List<Item> getItemsByLabels(ItemsRequest request) throws IOException, UnirestException {
