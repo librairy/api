@@ -1,9 +1,9 @@
 version: '3'
 services:
   librairy-solr:
-    image: solr
-    restart: true
-    privileged: true
+    image: solr:8.3
+    restart: "always"
+    privileged: "true"
     ports:
      - "8983:8983"
     volumes:
