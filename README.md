@@ -1,5 +1,13 @@
 # librAIry API
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[![GitHub Issues](https://img.shields.io/github/issues/cbadenes/phd-thesis.svg)](https://github.com/cbadenes/phd-thesis/issues)
+[![License](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://opensource.org/licenses/GPL-3.0)
+[![DOI](https://zenodo.org/badge/174326322.svg)](https://zenodo.org/badge/latestdoi/174326322)
+
+
+
+
 ***librAIry*** allows you to explore collections of documents on a large scale from a semantic point of view. It is based on the use of natural language processing (NLP) techniques combined with machine learning algorithms. 
 
 Use of the service requires prior authentication. If you do not have an account, you must request it by email to 'cbadenes' at 'fi.upm.es' .
