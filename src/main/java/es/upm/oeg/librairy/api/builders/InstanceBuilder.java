@@ -55,9 +55,9 @@ public class InstanceBuilder {
      * @param maxDocRatio Remove words that occur in more than (X*100)% of documents. 0.05 is equivalent to IDF of 3.0.
      * @return
      */
-    public InstanceList getInstances(String filePath, Integer size, String regEx, int textIndex, int labelIndex, int idIndex, boolean enableTarget, String pos, Integer minFreq, Double maxDocRatio, Boolean raw, List<String> stopwords, List<String> stoplabels) throws IOException {
+    public InstanceList getInstances(String filePath, Integer size, String regEx, int textIndex, int labelIndex, int idIndex, boolean enableTarget, String pos, Integer minFreq, Double maxDocRatio, Boolean raw, Boolean bow, List<String> stopwords, List<String> stoplabels) throws IOException {
 
-        PipeBuilderI pipeBuilder = PipeBuilderFactory.newInstance(size, raw);
+        PipeBuilderI pipeBuilder = PipeBuilderFactory.newInstance(size, raw, bow);
 
         File stoplist = Paths.get(Paths.get(resourceFolder).getParent().toString(), "stopwords.txt").toFile();
 

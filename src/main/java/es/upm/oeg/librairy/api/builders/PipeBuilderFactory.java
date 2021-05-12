@@ -11,9 +11,11 @@ public class PipeBuilderFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(PipeBuilderFactory.class);
 
-    public static PipeBuilderI newInstance(Integer size, Boolean raw){
-        if (raw) return new RawPipeBuilder(size);
-        else return new BoWPipeBuilder(size);
+    public static PipeBuilderI newInstance(Integer size, Boolean raw, Boolean bow) {
+        if (bow) return new BoWPipeBuilder(size);
+        else {
+            if (raw) return new RawPipeBuilder(size);
+            else return new BoWPipeBuilder(size);
+        }
     }
-
 }

@@ -58,6 +58,7 @@ public class CollectorService {
             Optional<Document> doc;
             reader.offset(datasource.getOffset().intValue());
             final Boolean raw = request.getParameters().containsKey("raw")? Boolean.valueOf(request.getParameters().get("raw")) : false;
+            final Boolean bow = request.getParameters().containsKey("bow")? Boolean.valueOf(request.getParameters().get("bow")) : false;
             final Map<String,Long> stopwords = request.getParameters().containsKey("stopwords")? Arrays.stream(request.getParameters().get("stopwords").split(" ")).collect(Collectors.groupingBy(Function.identity(), Collectors.counting())) : new HashMap<>();
             ParallelExecutor parallelExecutor = new ParallelExecutor();
             while(( maxSize<0 || counter.get()<maxSize) &&  (doc = reader.next()).isPresent()){
@@ -67,7 +68,7 @@ public class CollectorService {
                 parallelExecutor.submit(() -> {
                     try {
 
-                        corpusBuilder.add(document, multigrams, raw, pos, lowerCase, stopwords);
+                        corpusBuilder.add(document, multigrams, raw, bow, pos, lowerCase, stopwords);
                     } catch (Exception e) {
                         LOG.error("Unexpected error adding new document to corpus",e);
                     }

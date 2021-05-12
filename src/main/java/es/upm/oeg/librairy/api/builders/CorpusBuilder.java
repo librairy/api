@@ -69,7 +69,7 @@ public class CorpusBuilder {
         return counter.get();
     }
 
-    public void add(Document document, Boolean multigrams, Boolean raw, String pos, Boolean lowercase, Map<String,Long> stopwords) throws IOException {
+    public void add(Document document, Boolean multigrams, Boolean raw, Boolean bow, String pos, Boolean lowercase, Map<String,Long> stopwords) throws IOException {
         if (Strings.isNullOrEmpty(document.getText()) || Strings.isNullOrEmpty(document.getText().replace("\n","").trim())) {
             LOG.warn("Document is empty: " + document.getId());
             return;
@@ -89,7 +89,7 @@ public class CorpusBuilder {
             String docText = lowercase || isAllUpperCase ? documentText.toLowerCase() : documentText;
             //String content = StringReader.hardFormat(docText);
             List<PoS> posList = Arrays.stream(pos.split(" ")).map(l -> PoS.valueOf(l.toUpperCase())).collect(Collectors.toList());
-            String text = raw? docText : BoWService.toText(librairyNlpClient.bow( docText, language, posList, multigrams).stream().filter(g -> !stopwords.containsKey(g.getToken())).collect(Collectors.toList()));
+            String text = (raw||bow)? docText : BoWService.toText(librairyNlpClient.bow( docText, language, posList, multigrams).stream().filter(g -> !stopwords.containsKey(g.getToken())).collect(Collectors.toList()));
             row.append(text);
             updated = DateBuilder.now();
             int count = write(row.toString());

@@ -158,6 +158,7 @@ public class LDALauncher {
         String pos          = parameters.getPos();
         Integer maxRetries  = parameters.getNumRetries();
         Boolean raw         = parameters.getRaw();
+        Boolean bow         = parameters.getBow();
         Integer seed        = parameters.getSeed();
         Integer corpusSize  = parameters.getSize();
 
@@ -168,7 +169,7 @@ public class LDALauncher {
 
         Instant startProcess = Instant.now();
 
-        InstanceList instances = instanceBuilder.getInstances(parameters.getCorpusFile(), corpusSize, parameters.getRegEx(), parameters.getTextIndex(), parameters.getLabelIndex(), parameters.getIdIndex(), false, pos, parameters.getMinFreq(), parameters.getMaxDocRatio(),raw, parameters.getStopwords(), parameters.getStoplabels());
+        InstanceList instances = instanceBuilder.getInstances(parameters.getCorpusFile(), corpusSize, parameters.getRegEx(), parameters.getTextIndex(), parameters.getLabelIndex(), parameters.getIdIndex(), false, pos, parameters.getMinFreq(), parameters.getMaxDocRatio(),raw, bow, parameters.getStopwords(), parameters.getStoplabels());
 
         int numWords = instances.getDataAlphabet().size();
         if ( numWords <= 10 || instances.size() <=10){
